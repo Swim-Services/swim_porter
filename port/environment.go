@@ -35,19 +35,17 @@ func (p *porter) sky(skyboxOverride string) error {
 	skyboxes := []string{"cloud1", "cloud2", "starfield03", "starfield", "skybox", "skybox2"}
 	var skyMap image.Image
 	found := false
-	if skyboxOverride == "" {
+	if data, err := p.in.Read("assets/minecraft/mcpatcher/sky/world0/" + skyboxOverride + ".png"); err == nil && skyboxOverride != "" {
+		if skyMap, err = png.Decode(bytes.NewReader(data)); err == nil {
+			found = true
+		}
+	} else {
 		for _, box := range skyboxes {
 			if data, err := p.in.Read("assets/minecraft/mcpatcher/sky/world0/" + box + ".png"); err == nil {
 				if skyMap, err = png.Decode(bytes.NewReader(data)); err == nil {
 					found = true
 					break
 				}
-			}
-		}
-	} else {
-		if data, err := p.in.Read("assets/minecraft/mcpatcher/sky/world0/" + skyboxOverride + ".png"); err == nil {
-			if skyMap, err = png.Decode(bytes.NewReader(data)); err == nil {
-				found = true
 			}
 		}
 	}
