@@ -2,6 +2,8 @@ package recolor
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"image/color"
 	"image/png"
 	"path"
@@ -9,6 +11,7 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/sandertv/gophertunnel/minecraft/resource"
 	"github.com/swedeachu/swim_porter/port/internal"
 	"github.com/swedeachu/swim_porter/port/utils"
 )
@@ -50,6 +53,9 @@ func RecolorRaw(in *utils.MapFS, opts RecolorOptions) error {
 }
 
 func (p *recolorer) doRecolor(opts RecolorOptions) error {
+	if err := p.manifest(opts.ShowCredits); err != nil {
+		return err
+	}
 	color, err := utils.ParseHex(opts.NewColor)
 	if err != nil {
 		return err
@@ -76,5 +82,27 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func (p *recolorer) manifest(showCredits bool) error {
+	bedrockManifestOrig, err := p.in.Read("manifest.json")
+	if err != nil {
+		return errors.New("manifest.json not found")
+	}
+	var bedrockManifest resource.Manifest
+	err = json.Unmarshal(bedrockManifestOrig, &bedrockManifest)
+	if err != nil {
+		return err
+	}
+	bedrockManifest.Header.Name += "§r§b Recolor"
+	if showCredits {
+		bedrockManifest.Header.Description += "\n§aRecolored by §dSwim Auto Recolor §f| §bdiscord.gg/swim"
+	}
+	bedrockManifestBytes, err := json.Marshal(bedrockManifest)
+	if err != nil {
+		return err
+	}
+	p.in.Write(bedrockManifestBytes, "manifest.json")
 	return nil
 }
