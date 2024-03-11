@@ -10,10 +10,10 @@ import (
 	"github.com/swedeachu/swim_porter/port/internal"
 )
 
-func (p *porter) environment() error {
+func (p *porter) environment(skyboxOverride string) error {
 	p.destroyStages()
 	p.colorMap()
-	if err := p.sky(); err != nil {
+	if err := p.sky(skyboxOverride); err != nil {
 		return err
 	}
 	return nil
@@ -31,15 +31,23 @@ func (p *porter) colorMap() {
 	p.out.InterCopyDir(p.in, "assets/minecraft/mcpatcher/colormap", "textures/colormap")
 }
 
-func (p *porter) sky() error {
+func (p *porter) sky(skyboxOverride string) error {
 	skyboxes := []string{"cloud1", "cloud2", "starfield03", "starfield", "skybox", "skybox2"}
 	var skyMap image.Image
 	found := false
-	for _, box := range skyboxes {
-		if data, err := p.in.Read("assets/minecraft/mcpatcher/sky/world0/" + box + ".png"); err == nil {
+	if skyboxOverride == "" {
+		for _, box := range skyboxes {
+			if data, err := p.in.Read("assets/minecraft/mcpatcher/sky/world0/" + box + ".png"); err == nil {
+				if skyMap, err = png.Decode(bytes.NewReader(data)); err == nil {
+					found = true
+					break
+				}
+			}
+		}
+	} else {
+		if data, err := p.in.Read("assets/minecraft/mcpatcher/sky/world0/" + skyboxOverride + ".png"); err == nil {
 			if skyMap, err = png.Decode(bytes.NewReader(data)); err == nil {
 				found = true
-				break
 			}
 		}
 	}

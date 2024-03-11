@@ -10,18 +10,23 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/resource"
 )
 
+type PortOptions struct {
+	ShowCredits    bool
+	SkyboxOverride string
+}
+
 type porter struct {
 	in   *utils.MapFS
 	out  *utils.MapFS
 	name string
 }
 
-func Port(in []byte, name string) ([]byte, error) {
+func Port(in []byte, name string, opts PortOptions) ([]byte, error) {
 	zipMap, err := utils.Unzip(in)
 	if err != nil {
 		return []byte{}, err
 	}
-	outFS, err := PortRaw(utils.NewMapFS(zipMap), name)
+	outFS, err := PortRaw(utils.NewMapFS(zipMap), name, opts)
 	if err != nil {
 		return []byte{}, err
 	}
@@ -32,17 +37,17 @@ func Port(in []byte, name string) ([]byte, error) {
 	return out, nil
 }
 
-func PortRaw(in *utils.MapFS, name string) (*utils.MapFS, error) {
+func PortRaw(in *utils.MapFS, name string, opts PortOptions) (*utils.MapFS, error) {
 	p := &porter{in: in, out: utils.NewMapFS(make(map[string][]byte)), name: name}
-	err := p.doPort()
+	err := p.doPort(opts)
 	if err != nil {
 		return nil, err
 	}
 	return p.out, nil
 }
 
-func (p *porter) doPort() error {
-	if err := p.manifest(); err != nil {
+func (p *porter) doPort(opts PortOptions) error {
+	if err := p.manifest(opts.ShowCredits); err != nil {
 		return err
 	}
 	p.icon()
@@ -58,7 +63,7 @@ func (p *porter) doPort() error {
 	if err := p.ui(); err != nil {
 		return err
 	}
-	if err := p.environment(); err != nil {
+	if err := p.environment(opts.SkyboxOverride); err != nil {
 		return err
 	}
 	p.misc()
@@ -67,7 +72,7 @@ func (p *porter) doPort() error {
 	return nil
 }
 
-func (p *porter) manifest() error {
+func (p *porter) manifest(showCredits bool) error {
 	meta, err := p.in.Read("pack.mcmeta")
 	if err != nil {
 		return errors.New("pack.mcmeta not found")
@@ -76,18 +81,22 @@ func (p *porter) manifest() error {
 	if err != nil {
 		return err
 	}
+	desc := javaMeta.Pack.Description
+	if showCredits {
+		desc += "\n§aPorted by §dSwim Auto Port"
+	}
 	bedrockManifest := resource.Manifest{
 		FormatVersion: 1,
 		Header: resource.Header{
 			Name:               p.name,
-			Description:        javaMeta.Pack.Description,
+			Description:        desc,
 			UUID:               uuid.New().String(),
 			Version:            [3]int{2, 0, 0},
 			MinimumGameVersion: [3]int{1, 12, 1},
 		},
 		Modules: []resource.Module{{
 			UUID:        uuid.New().String(),
-			Description: javaMeta.Pack.Description,
+			Description: desc,
 			Type:        "resources",
 			Version:     [3]int{2, 0, 0},
 		}},

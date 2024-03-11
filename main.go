@@ -13,9 +13,11 @@ import (
 
 func main() {
 	input := flag.String("i", "", "input pack")
-	output := flag.String("o", "", "output path")
+	output := flag.String("o", ".", "output path")
+	showCredits := flag.Bool("show-credits", false, "show credits")
+	skyboxOverride := flag.String("skybox-override", "", "skybox override")
 	flag.Parse()
-	if *input == "" || *output == "" {
+	if *input == "" {
 		flag.Usage()
 		os.Exit(-1)
 	}
@@ -26,7 +28,7 @@ func main() {
 	name := filepath.Base(*input)
 	nameNoExt := name[:strings.LastIndex(name, path.Ext(name))]
 
-	out, err := port.Port(dat, nameNoExt)
+	out, err := port.Port(dat, nameNoExt, port.PortOptions{ShowCredits: *showCredits, SkyboxOverride: *skyboxOverride})
 	if err != nil {
 		log.Fatalln(err)
 	}
