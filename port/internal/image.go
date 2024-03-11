@@ -24,7 +24,8 @@ func SideOverlayTGA(overlay, base []byte) ([]byte, error) {
 	}
 	bounds := baseImg.Bounds()
 
-	canvas := baseImg.(*image.NRGBA)
+	canvas := image.NewNRGBA(bounds)
+	draw.Draw(canvas, bounds, baseImg, image.Point{}, draw.Src)
 
 	drawAlpha(canvas, 1)
 

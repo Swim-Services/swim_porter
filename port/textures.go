@@ -75,9 +75,9 @@ func imageTransparencyFix(raw image.Image) *image.RGBA {
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			rgba := raw.At(x, y).(color.NRGBA)
-			alpha := rgba.A
-
+			rgba := raw.At(x, y)
+			_, _, _, alpha := rgba.RGBA()
+			alpha >>= 8
 			if alpha < 127 {
 				rgba = color.NRGBA{0xff, 0xff, 0xff, 0x00} // Fully transparent white
 			}
