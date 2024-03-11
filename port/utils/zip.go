@@ -41,7 +41,11 @@ func Unzip(source []byte) (map[string][]byte, error) {
 		if file.Mode().IsDir() {
 			continue
 		}
-		if slices.Contains(blacklist, filepath.Base(file.Name)) {
+		baseName := filepath.Base(file.Name)
+		if slices.Contains(blacklist, baseName) {
+			continue
+		}
+		if strings.HasPrefix(baseName, "._") {
 			continue
 		}
 		if strings.Contains(file.Name, "__MACOSX") {
