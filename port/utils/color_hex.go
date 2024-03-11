@@ -1,11 +1,15 @@
 package utils
 
 import (
+	"errors"
 	"image/color"
 	"strconv"
 )
 
 func ParseHex(hex string) (color.RGBA, error) {
+	if len(hex) != 6 {
+		return color.RGBA{}, errors.New("invalid hex")
+	}
 	r, err := strconv.ParseInt(hex[0:2], 16, 64)
 	if err != nil {
 		return color.RGBA{}, err
