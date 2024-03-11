@@ -44,6 +44,9 @@ func Unzip(source []byte) (map[string][]byte, error) {
 		if slices.Contains(blacklist, filepath.Base(file.Name)) {
 			continue
 		}
+		if strings.Contains(file.Name, "__MACOSX") {
+			continue
+		}
 		name := strings.TrimPrefix(file.Name, "/")
 		base := strings.Split(name, "/")[0]
 		if single && last != "" && base != last {
