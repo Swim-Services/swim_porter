@@ -83,7 +83,7 @@ func (p *porter) manifest(showCredits bool) error {
 	}
 	desc := javaMeta.Pack.Description
 	if showCredits {
-		desc += "\n§aPorted by §dSwim Auto Port"
+		desc += "\n§aPorted by §dSwim Auto Port §f| §bdiscord.gg/swim"
 	}
 	bedrockManifest := resource.Manifest{
 		FormatVersion: 1,
