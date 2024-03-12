@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"image"
 	"image/color"
 	"image/png"
 	"path"
@@ -19,6 +20,7 @@ import (
 type RecolorOptions struct {
 	ShowCredits bool
 	NewColor    string
+	Alg         string
 }
 
 type recolorer struct {
@@ -74,7 +76,18 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 		if err != nil {
 			continue // ignore invalid images
 		}
-		newImg, err := HueShift(img, float64(GetHue(int(color.R), int(color.G), int(color.B))))
+		var newImg image.Image
+		err = nil
+		switch opts.Alg {
+		case "tint":
+			newImg = Tint(img, color)
+		case "hue":
+			newImg, err = HueShift(img, float64(GetHue(int(color.R), int(color.G), int(color.B))))
+		case "gray_tint":
+			newImg = GrayTint(img, color)
+		default:
+			return errors.New("unknown algorithm")
+		}
 		if err != nil {
 			return err
 		}
