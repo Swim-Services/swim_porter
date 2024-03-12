@@ -46,6 +46,9 @@ func Recolor(in []byte, opts RecolorOptions) ([]byte, error) {
 }
 
 func RecolorRaw(in *utils.MapFS, opts RecolorOptions) error {
+	if opts.Alg == "" {
+		opts.Alg = "hue"
+	}
 	p := &recolorer{in: in}
 	err := p.doRecolor(opts)
 	if err != nil {
