@@ -60,7 +60,7 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 	if err != nil {
 		return err
 	}
-	for file, data := range p.in.Dir("") {
+	for file, data := range p.in.RawMap() {
 		name := filepath.Base(file)
 		ext := path.Ext(name)
 		if ext != ".png" {
