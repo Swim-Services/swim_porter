@@ -33,7 +33,6 @@ func Tint(in image.Image, tint color.RGBA) image.Image {
 }
 
 func HueShift(in image.Image, iHUE float64) (image.Image, error) {
-	hue := iHUE / 360.0
 	bounds := in.Bounds()
 	out := image.NewRGBA(bounds)
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
@@ -43,7 +42,7 @@ func HueShift(in image.Image, iHUE float64) (image.Image, error) {
 				continue
 			}
 			_, s, v := colorconv.RGBToHSV(uint8(r>>8), uint8(g>>8), uint8(b>>8))
-			outR, outG, outB, err := colorconv.HSVToRGB(hue, s, v)
+			outR, outG, outB, err := colorconv.HSVToRGB(iHUE, s, v)
 			if err != nil {
 				return nil, err
 			}
