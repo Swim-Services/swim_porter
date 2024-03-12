@@ -72,7 +72,7 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 		}
 		img, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return nil // ignore invalid images
+			continue // ignore invalid images
 		}
 		newImg, err := HueShift(img, float64(GetHue(int(color.R), int(color.G), int(color.B))))
 		if err != nil {
