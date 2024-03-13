@@ -78,10 +78,12 @@ func (p *porter) manifest(showCredits bool) error {
 		return errors.New("pack.mcmeta not found")
 	}
 	javaMeta, err := utils.PackMcmeta(meta)
+	var desc string
 	if err != nil {
-		return err
+		desc = p.name
+	} else {
+		desc = javaMeta.Pack.Description
 	}
-	desc := javaMeta.Pack.Description
 	if showCredits {
 		desc += "\n§aPorted by §dSwim Auto Port §f| §bdiscord.gg/swim"
 	}
