@@ -49,9 +49,9 @@ func GrayTint(in image.Image, tint color.RGBA) image.Image {
 			b >>= 8
 			a >>= 8
 
-			r = uint32(float32(r) * (float32(tint.R) / 255.0))
-			g = uint32(float32(g) * (float32(tint.G) / 255.0))
-			b = uint32(float32(b) * (float32(tint.B) / 255.0))
+			r = uint32(math.Min(float64(r)*(float64(tint.R)/128.0), 255))
+			g = uint32(math.Min(float64(g)*(float64(tint.G)/128.0), 255))
+			b = uint32(math.Min(float64(b)*(float64(tint.B)/128.0), 255))
 
 			dst.SetRGBA(x, y, color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)})
 		}
