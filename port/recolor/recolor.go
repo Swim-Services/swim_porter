@@ -111,6 +111,7 @@ func (p *recolorer) manifest(showCredits bool) error {
 	if err != nil {
 		return err
 	}
+	utils.ChangeUUID(&bedrockManifest)
 	bedrockManifest.Header.Name += "§r§b Recolor"
 	if showCredits {
 		bedrockManifest.Header.Description += "\n§aRecolored by §dSwim Auto Recolor §f| §bdiscord.gg/swim"
