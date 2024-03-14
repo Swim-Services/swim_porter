@@ -2,7 +2,6 @@ package blend
 
 import (
 	"errors"
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -19,7 +18,6 @@ func Blend(in image.Image, fadePercent int) (image.Image, error) {
 	draw.Draw(newImg, bounds, in, image.Point{}, draw.Src)
 	width := bounds.Dx()
 	blendAmt := int(float32(width) * float32(fadePercent) / 100.0)
-	fmt.Println(blendAmt)
 	for x := 0; x < blendAmt; x++ {
 		for y := 0; y < bounds.Dy(); y++ {
 			newImg.Set(width-x-1, y, blendColors(in.At(blendAmt-x, y), in.At(width-x-1, y), float64(x)/float64(blendAmt)))
