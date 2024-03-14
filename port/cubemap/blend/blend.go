@@ -11,8 +11,8 @@ import (
 )
 
 func Blend(in image.Image, fadePercent int) (image.Image, error) {
-	if fadePercent > 100 {
-		return nil, errors.New("fade percent must be less than or equal to 100")
+	if fadePercent >= 50 || fadePercent < 1 {
+		return nil, errors.New("fade percent must be between 1 and 49")
 	}
 	bounds := in.Bounds()
 	newImg := image.NewRGBA(bounds)
