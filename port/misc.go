@@ -3,7 +3,7 @@ package port
 import (
 	_ "embed"
 
-	"github.com/swedeachu/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/port/utils"
 )
 
 //go:embed assets.zip

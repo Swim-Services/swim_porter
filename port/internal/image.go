@@ -7,7 +7,7 @@ import (
 	"image/draw"
 	"image/png"
 
-	"github.com/swedeachu/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/port/utils"
 
 	"github.com/dblezek/tga"
 	"github.com/disintegration/imaging"

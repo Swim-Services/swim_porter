@@ -1,4 +1,4 @@
-module github.com/swedeachu/swim_porter
+module github.com/swim-services/swim_porter
 
 go 1.21.4
 

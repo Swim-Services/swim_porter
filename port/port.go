@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/swedeachu/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/port/utils"
 
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/resource"

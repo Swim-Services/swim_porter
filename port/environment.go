@@ -6,8 +6,8 @@ import (
 	"image"
 	"image/png"
 
-	"github.com/swedeachu/swim_porter/port/cubemap"
-	"github.com/swedeachu/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/cubemap"
+	"github.com/swim-services/swim_porter/port/internal"
 )
 
 func (p *porter) environment(skyboxOverride string) error {

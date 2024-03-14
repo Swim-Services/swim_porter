@@ -7,9 +7,9 @@ import (
 	"image/png"
 	"math"
 
-	"github.com/swedeachu/swim_porter/port/internal"
-	"github.com/swedeachu/swim_porter/port/recolor"
-	"github.com/swedeachu/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/recolor"
+	"github.com/swim-services/swim_porter/port/utils"
 
 	"github.com/disintegration/imaging"
 )

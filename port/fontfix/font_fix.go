@@ -9,8 +9,8 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/sandertv/gophertunnel/minecraft/resource"
-	"github.com/swedeachu/swim_porter/port/internal"
-	"github.com/swedeachu/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/utils"
 )
 
 type fontfixer struct {

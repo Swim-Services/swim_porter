@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/swedeachu/swim_porter/port"
+	"github.com/swim-services/swim_porter/port"
 )
 
 func main() {

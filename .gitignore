@@ -1,3 +1,4 @@
 swim_porter
 *.exe
 *.mcpack
+.idea/*

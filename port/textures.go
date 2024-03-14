@@ -7,7 +7,7 @@ import (
 	"image/png"
 	"strings"
 
-	"github.com/swedeachu/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/internal"
 )
 
 func (p *porter) textures() error {
