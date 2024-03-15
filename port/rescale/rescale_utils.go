@@ -7,7 +7,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/blezek/tga"
+	"github.com/gameparrot/tga"
 	"github.com/disintegration/imaging"
 )
 

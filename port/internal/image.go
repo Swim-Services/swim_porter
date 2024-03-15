@@ -9,7 +9,7 @@ import (
 
 	"github.com/swim-services/swim_porter/port/utils"
 
-	"github.com/blezek/tga"
+	"github.com/gameparrot/tga"
 	"github.com/disintegration/imaging"
 )
 
