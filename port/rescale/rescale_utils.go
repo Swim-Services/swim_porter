@@ -7,8 +7,8 @@ import (
 	"path"
 	"path/filepath"
 
+	"github.com/blezek/tga"
 	"github.com/disintegration/imaging"
-	"github.com/ftrvxmtrx/tga"
 )
 
 var filters = map[string]imaging.ResampleFilter{"nearest_neighbor": imaging.NearestNeighbor, "box": imaging.Box, "linear": imaging.Linear, "hermite": imaging.Hermite, "mitchellnetravali": imaging.MitchellNetravali, "catmull_rom": imaging.CatmullRom, "bspline": imaging.BSpline, "gaussian": imaging.Gaussian, "bartlett": imaging.Bartlett, "lanczos": imaging.Lanczos, "hann": imaging.Hann, "hamming": imaging.Hamming, "blackman": imaging.Blackman, "welch": imaging.Welch, "cosine": imaging.Cosine}

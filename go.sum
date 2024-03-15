@@ -1,7 +1,7 @@
+github.com/blezek/tga v0.0.0-20150626111426-80720cbc1017 h1:TWk6m6k3qegbUZsdsHk/ix22ANqPgLau40bPwiNQN40=
+github.com/blezek/tga v0.0.0-20150626111426-80720cbc1017/go.mod h1:WnX8JiQN+UtyUPq/1EIUaB2WVX3wdAmOBH5K52NyOO0=
 github.com/crazy3lf/colorconv v1.2.0 h1:UM7kSZWnwFMGiC+PpYrjxQSOd6sEyWb+dRKKTd3KslA=
 github.com/crazy3lf/colorconv v1.2.0/go.mod h1:2jTJ7QCWCj2sSLOhF4Gzi0J5/hoX8/VY8VzNvXAlD1I=
-github.com/dblezek/tga v0.0.0-20150626111426-80720cbc1017 h1:awJfkE1xXsPK+yOi1JfFBYCrSBkZXWbOgEFL6dmYeUA=
-github.com/dblezek/tga v0.0.0-20150626111426-80720cbc1017/go.mod h1:47yJHzYP/+2SCHY45B0eyR1QaecoOhkTTpS7UasE0DY=
 github.com/disintegration/imaging v1.6.2 h1:w1LecBlG2Lnp8B3jk5zSuNqd7b4DXhcjwek1ei82L+c=
 github.com/disintegration/imaging v1.6.2/go.mod h1:44/5580QXChDfwIclfc/PCwrr44amcmDAg8hxG0Ewe4=
 github.com/ftrvxmtrx/tga v0.0.0-20150524081124-bd8e8d5be13a h1:eSqaRmdlZ9JsJ7JuWfDr3ym3monToXRczohBOL+heVQ=
