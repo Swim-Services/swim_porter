@@ -9,8 +9,8 @@ import (
 
 	"github.com/swim-services/swim_porter/port/utils"
 
-	"github.com/gameparrot/tga"
 	"github.com/disintegration/imaging"
+	"github.com/gameparrot/tga"
 )
 
 func SideOverlayTGA(overlay, base []byte) ([]byte, error) {
@@ -56,4 +56,19 @@ func drawAlpha(in *image.NRGBA, alpha uint8) {
 			in.SetNRGBA(x, y, color.NRGBA{rgba.R, rgba.G, rgba.B, alpha})
 		}
 	}
+}
+
+func AlphaMult(in image.Image, mult int) *image.NRGBA {
+	bounds := in.Bounds()
+	dst := image.NewNRGBA(bounds)
+	draw.Draw(dst, bounds, in, image.Point{}, draw.Src)
+	for x := bounds.Min.X; x < bounds.Max.X; x++ {
+		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+			imgColor := dst.NRGBAAt(x, y)
+			newA := min(255, int(imgColor.A)*mult)
+			imgColor.A = uint8(newA)
+			dst.Set(x, y, imgColor)
+		}
+	}
+	return dst
 }

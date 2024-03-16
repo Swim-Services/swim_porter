@@ -7,6 +7,7 @@ import (
 	"image/png"
 	"strings"
 
+	"github.com/disintegration/imaging"
 	"github.com/swim-services/swim_porter/port/internal"
 )
 
@@ -20,6 +21,12 @@ func (p *porter) textures() error {
 	p.fire()
 	p.painting()
 	if err := p.grassSide(); err != nil {
+		return err
+	}
+	if err := p.water(false); err != nil {
+		return err
+	}
+	if err := p.water(true); err != nil {
 		return err
 	}
 	return nil
@@ -62,6 +69,26 @@ func (p *porter) itemsFix() {
 func (p *porter) fire() {
 	p.out.Rename("textures/blocks/fire_layer_1.png", "textures/blocks/fire_1.png")
 	p.out.Rename("textures/blocks/fire_layer_0.png", "textures/blocks/fire_0.png")
+}
+
+func (p *porter) water(flow bool) error {
+	var waterType string
+	if flow {
+		waterType = "_flow"
+	} else {
+		waterType = "_still"
+	}
+	if data, err := p.out.Read("textures/blocks/water" + waterType + ".png"); err == nil {
+		waterImg, err := png.Decode(bytes.NewReader(data))
+		if err != nil {
+			return err
+		}
+		greyWater := internal.AlphaMult(imaging.Grayscale(waterImg), 2)
+		if err := internal.WritePng(greyWater, "textures/blocks/water"+waterType+"_grey.png", p.out); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (p *porter) painting() {
