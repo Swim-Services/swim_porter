@@ -41,17 +41,18 @@ func Unzip(source []byte) (map[string][]byte, error) {
 		if file.Mode().IsDir() {
 			continue
 		}
-		baseName := filepath.Base(file.Name)
+		fileName := strings.ReplaceAll(file.Name, "\\", "/")
+		baseName := filepath.Base(fileName)
 		if slices.Contains(blacklist, baseName) {
 			continue
 		}
 		if strings.HasPrefix(baseName, "._") {
 			continue
 		}
-		if strings.Contains(file.Name, "__MACOSX") {
+		if strings.Contains(fileName, "__MACOSX") {
 			continue
 		}
-		name := strings.TrimPrefix(file.Name, "/")
+		name := strings.TrimPrefix(fileName, "/")
 		base := strings.Split(name, "/")[0]
 		if single && last != "" && base != last {
 			single = false
