@@ -15,6 +15,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/resource"
 	"github.com/swim-services/swim_porter/port/internal"
 	"github.com/swim-services/swim_porter/port/utils"
+	stripjsoncomments "github.com/trapcodeio/go-strip-json-comments"
 )
 
 type RecolorOptions struct {
@@ -107,7 +108,7 @@ func (p *recolorer) manifest(showCredits bool) error {
 		return errors.New("manifest.json not found")
 	}
 	var bedrockManifest resource.Manifest
-	err = json.Unmarshal(bedrockManifestOrig, &bedrockManifest)
+	err = json.Unmarshal([]byte(stripjsoncomments.Strip(string(bedrockManifestOrig))), &bedrockManifest)
 	if err != nil {
 		return err
 	}

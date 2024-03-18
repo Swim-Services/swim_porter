@@ -9,6 +9,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/klauspost/compress v1.15.1
 	github.com/sandertv/gophertunnel v1.35.0
+	github.com/trapcodeio/go-strip-json-comments v1.0.11
 )
 
 require (

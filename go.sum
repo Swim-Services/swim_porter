@@ -12,6 +12,8 @@ github.com/muhammadmuzzammil1998/jsonc v1.0.0 h1:8o5gBQn4ZA3NBA9DlTujCj2a4w0tqWr
 github.com/muhammadmuzzammil1998/jsonc v1.0.0/go.mod h1:saF2fIVw4banK0H4+/EuqfFLpRnoy5S+ECwTOCcRcSU=
 github.com/sandertv/gophertunnel v1.35.0 h1:1QQ/FSvSBQ4nqYus7Br4ihDDoI6g+L4/4MYNpPrIDKs=
 github.com/sandertv/gophertunnel v1.35.0/go.mod h1:4El8ZfEpUmOMIJhPt5SCc1PyLNiuQ2+grWczrBvSGVs=
+github.com/trapcodeio/go-strip-json-comments v1.0.11 h1:W+XbBr0n1ioCBsq7v9r24rwkdZ45s+W7q8tMRcfaNPI=
+github.com/trapcodeio/go-strip-json-comments v1.0.11/go.mod h1:BfvajXqcb88qWmv4Gm8PcJ8mvpDsFUgobxtxb3YVr+o=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
