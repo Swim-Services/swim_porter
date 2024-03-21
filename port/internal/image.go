@@ -27,7 +27,7 @@ func SideOverlayTGA(overlay, base []byte) ([]byte, error) {
 	canvas := image.NewNRGBA(bounds)
 	draw.Draw(canvas, bounds, baseImg, image.Point{}, draw.Src)
 
-	drawAlpha(canvas, 1)
+	DrawAlpha(canvas, 1)
 
 	scaledOverlay := imaging.Resize(overlayImg, bounds.Dx(), bounds.Dy(), imaging.NearestNeighbor)
 	draw.Draw(canvas, bounds, scaledOverlay, image.Point{}, draw.Over)
@@ -48,12 +48,28 @@ func WritePng(img image.Image, path string, fs *utils.MapFS) error {
 	return nil
 }
 
-func drawAlpha(in *image.NRGBA, alpha uint8) {
+func DrawAlpha(in *image.NRGBA, alpha uint8) {
 	bounds := in.Bounds()
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
 		for y := bounds.Min.X; y < bounds.Max.Y; y++ {
 			rgba := in.At(x, y).(color.NRGBA)
+			if rgba.A == 0 {
+				continue
+			}
 			in.SetNRGBA(x, y, color.NRGBA{rgba.R, rgba.G, rgba.B, alpha})
+		}
+	}
+}
+
+func DrawAlphaOver(bg *image.NRGBA, in *image.NRGBA, alpha uint8) {
+	bounds := in.Bounds()
+	for x := bounds.Min.X; x < bounds.Max.X; x++ {
+		for y := bounds.Min.X; y < bounds.Max.Y; y++ {
+			rgba := in.At(x, y).(color.NRGBA)
+			if rgba.A == 0 {
+				continue
+			}
+			bg.SetNRGBA(x, y, color.NRGBA{rgba.R, rgba.G, rgba.B, alpha})
 		}
 	}
 }

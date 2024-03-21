@@ -2,13 +2,16 @@ package port
 
 import (
 	"bytes"
+	"fmt"
 	"image"
+	"image/color"
 	"image/draw"
 	"image/png"
 
 	"github.com/disintegration/imaging"
 	"github.com/gameparrot/tga"
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/recolor"
 )
 
 func (p *porter) entityFixes() error {
@@ -16,6 +19,9 @@ func (p *porter) entityFixes() error {
 		return err
 	}
 	if err := p.fixSheep(); err != nil {
+		return err
+	}
+	if err := p.fixLeather(); err != nil {
 		return err
 	}
 	return nil
@@ -75,5 +81,42 @@ func (p *porter) fixSheep() error {
 			p.out.Write(writer.Bytes(), "textures/entity/sheep/sheep.tga")
 		}
 	}
+	return nil
+}
+
+func (p *porter) fixLeather() error {
+	for i := 1; i <= 2; i++ {
+		imgPath := fmt.Sprintf("textures/models/armor/cloth_%d.png", i)
+		overlayPath := fmt.Sprintf("textures/models/armor/leather_layer_%d_overlay.png", i)
+		if data, err := p.out.Read(imgPath); err == nil {
+			img, err := png.Decode(bytes.NewReader(data))
+			if err != nil {
+				return err
+			}
+			newImg := recolor.Tint(img, color.RGBA{R: 190, G: 120, B: 80})
+			if err := internal.WritePng(newImg, imgPath, p.out); err != nil {
+				return err
+			}
+
+			if overlayData, err := p.out.Read(overlayPath); err == nil {
+				overlay, err := png.Decode(bytes.NewReader(overlayData))
+				if err != nil {
+					return err
+				}
+				drawImg := imaging.Clone(img)
+				if overlay.Bounds().Dx() != drawImg.Bounds().Dx() {
+					overlay = imaging.Resize(overlay, drawImg.Bounds().Dx(), drawImg.Bounds().Dy(), imaging.NearestNeighbor)
+				}
+				internal.DrawAlphaOver(drawImg, imaging.Clone(overlay), 1)
+				writer := bytes.NewBuffer([]byte{})
+				if err := tga.Encode(writer, imageTransparencyFix(drawImg, 0)); err != nil {
+					return err
+				}
+				p.out.Write(writer.Bytes(), fmt.Sprintf("textures/models/armor/leather_%d.tga", i))
+				p.out.Delete(overlayPath)
+			}
+		}
+	}
+
 	return nil
 }

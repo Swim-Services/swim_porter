@@ -3,7 +3,6 @@ package port
 import (
 	"bytes"
 	"image"
-	"image/color"
 	"image/png"
 	"strings"
 
@@ -60,7 +59,7 @@ func (p *porter) itemsFix() {
 	for path, data := range p.out.Dir("textures/items") {
 		if strings.HasSuffix(strings.ToLower(path), ".png") {
 			if img, err := png.Decode(bytes.NewReader(data)); err == nil {
-				internal.WritePng(imageTransparencyFix(img), "textures/items"+path, p.out)
+				internal.WritePng(imageTransparencyFix(img, 127), "textures/items"+path, p.out)
 			}
 		}
 	}
@@ -95,22 +94,15 @@ func (p *porter) painting() {
 	p.out.Rename("textures/painting/paintings_kristoffer_zetterstrand.png", "textures/painting/kz.png")
 }
 
-func imageTransparencyFix(raw image.Image) *image.RGBA {
-	bounds := raw.Bounds()
-
-	image := image.NewRGBA(bounds)
-
-	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			rgba := raw.At(x, y)
-			_, _, _, alpha := rgba.RGBA()
-			alpha >>= 8
-			if alpha < 127 {
-				rgba = color.NRGBA{0xff, 0xff, 0xff, 0x00} // Fully transparent white
-			}
-
-			image.Set(x, y, rgba)
+func imageTransparencyFix(raw image.Image, cutoff uint8) *image.NRGBA {
+	newImg := imaging.Clone(raw)
+	for i := 3; i < len(newImg.Pix); i += 4 {
+		if newImg.Pix[i] <= cutoff {
+			newImg.Pix[i-3] = 255
+			newImg.Pix[i-2] = 255
+			newImg.Pix[i-1] = 255
+			newImg.Pix[i] = 0
 		}
 	}
-	return image
+	return newImg
 }
