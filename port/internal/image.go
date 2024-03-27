@@ -88,3 +88,51 @@ func AlphaMult(in image.Image, mult int) *image.NRGBA {
 	}
 	return dst
 }
+
+func LowAlpha(in image.Image, start image.Point) int {
+	most := -1
+	bounds := in.Bounds()
+	for y := start.Y; y < bounds.Max.Y; y++ {
+		allNoAlpha := true
+		for x := start.X; x < bounds.Max.X; x++ {
+			_, _, _, a := in.At(x, y).RGBA()
+			if a != 0 {
+				allNoAlpha = false
+				break
+			}
+		}
+		if y > most {
+			most = y
+		}
+		if allNoAlpha {
+			return most
+		}
+	}
+	return most
+}
+
+func LowNoAlpha(in image.Image, start image.Point, to image.Point) int {
+	bounds := in.Bounds()
+	for y := start.Y; y < to.Y; y++ {
+		for x := start.X; x < to.X; x++ {
+			_, _, _, a := in.At(x, y).RGBA()
+			if a != 0 {
+				return y
+			}
+		}
+	}
+	return bounds.Min.X
+}
+
+func RightAlpha(in image.Image, start image.Point, to image.Point) int {
+	bounds := in.Bounds()
+	for x := to.X - 1; x >= start.X; x-- {
+		for y := start.Y; y < to.Y; y++ {
+			_, _, _, a := in.At(x, y).RGBA()
+			if a != 0 {
+				return x
+			}
+		}
+	}
+	return bounds.Min.X
+}

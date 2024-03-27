@@ -66,7 +66,9 @@ func (p *porter) doPort(opts PortOptions) error {
 	if err := p.environment(opts.SkyboxOverride); err != nil {
 		return err
 	}
-	p.misc()
+	if err := p.misc(); err != nil {
+		return err
+	}
 	p.itemsFix()
 	if err := p.entityFixes(); err != nil {
 		return err
