@@ -70,6 +70,9 @@ func (p *porter) doPort(opts PortOptions) error {
 		return err
 	}
 	p.itemsFix()
+	if err := p.beds(); err != nil {
+		return err
+	}
 	if err := p.entityFixes(); err != nil {
 		return err
 	}

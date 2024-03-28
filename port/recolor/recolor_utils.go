@@ -59,6 +59,31 @@ func GrayTint(in image.Image, tint color.RGBA) image.Image {
 	return dst
 }
 
+func GrayTintRange(in image.Image, tint color.RGBA, start image.Point, end image.Point, mult float64) image.Image {
+	dst := imaging.Clone(in)
+	in = imaging.Grayscale(in)
+	for y := start.Y; y < end.Y; y++ {
+		for x := start.X; x < end.X; x++ {
+			pixelColor := in.At(x, y)
+			r, g, b, a := pixelColor.RGBA()
+			if a < 1024 {
+				continue
+			}
+			r >>= 8
+			g >>= 8
+			b >>= 8
+			a >>= 8
+
+			r = uint32(math.Min(float64(r)*(float64(tint.R)/(256/mult)), 255))
+			g = uint32(math.Min(float64(g)*(float64(tint.G)/(256/mult)), 255))
+			b = uint32(math.Min(float64(b)*(float64(tint.B)/(256/mult)), 255))
+
+			dst.SetNRGBA(x, y, color.NRGBA{uint8(r), uint8(g), uint8(b), uint8(a)})
+		}
+	}
+	return dst
+}
+
 func HueShift(in image.Image, iHUE float64) (image.Image, error) {
 	bounds := in.Bounds()
 	out := image.NewRGBA(bounds)
