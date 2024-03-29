@@ -62,10 +62,10 @@ func (p *porter) beds() error {
 
 	if woodPlanksData, err := p.out.Read("textures/blocks/planks_oak.png"); err == nil {
 		planksImg, err := png.Decode(bytes.NewReader(woodPlanksData))
-		planksImg = imaging.Resize(planksImg, headTop.Bounds().Dx(), headTop.Bounds().Dy(), imaging.NearestNeighbor)
 		if err != nil {
 			return porterror.Wrap(err)
 		}
+		planksImg = imaging.Resize(planksImg, headTop.Bounds().Dx(), headTop.Bounds().Dy(), imaging.NearestNeighbor)
 		draw.Draw(newImg, planksImg.Bounds().Add(image.Point{X: baseDraw + feetSide.Bounds().Dx() + feetSide.Bounds().Dx() - feetStart - feetHeight, Y: baseDraw}), planksImg, image.Point{}, draw.Over)
 		draw.Draw(newImg, planksImg.Bounds().Add(image.Point{X: baseDraw + feetSide.Bounds().Dx() + feetSide.Bounds().Dx() - feetStart - feetHeight, Y: baseDraw + feetTop.Bounds().Dx()}), planksImg, image.Point{}, draw.Over)
 	}
