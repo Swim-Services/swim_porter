@@ -8,6 +8,7 @@ import (
 
 	"github.com/swim-services/swim_porter/port/cubemap"
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/porterror"
 )
 
 func (p *porter) environment(skyboxOverride string) error {
@@ -55,7 +56,7 @@ func (p *porter) sky(skyboxOverride string) error {
 	cubemapImages := cubemap.BuildCubemap(skyMap)
 	for i, img := range cubemapImages {
 		if err := internal.WritePng(img, fmt.Sprintf("textures/environment/overworld_cubemap/cubemap_%d.png", i), p.out); err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 	}
 	return nil

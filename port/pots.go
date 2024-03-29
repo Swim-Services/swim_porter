@@ -8,6 +8,7 @@ import (
 	"math"
 
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/porterror"
 	"github.com/swim-services/swim_porter/port/recolor"
 	"github.com/swim-services/swim_porter/port/utils"
 
@@ -44,11 +45,11 @@ func (p *porter) tintPots(splash bool) error {
 	}
 	blank, err := png.Decode(bytes.NewReader(data))
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	overlay, err := png.Decode(bytes.NewReader(overlayBytes))
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	if overlay.Bounds() != blank.Bounds() {
 		overlay = imaging.Resize(overlay, blank.Bounds().Dx(), blank.Bounds().Dy(), imaging.NearestNeighbor)
@@ -60,7 +61,7 @@ func (p *porter) tintPots(splash bool) error {
 		draw.Draw(canvas, blank.Bounds(), over, image.Point{0, 0}, draw.Over)
 		writer := bytes.NewBuffer([]byte{})
 		if err := png.Encode(writer, canvas); err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		imgBytes := writer.Bytes()
 		if splash {
@@ -76,7 +77,7 @@ func (p *porter) potionEffectsUI() error {
 	if inv, err := p.out.Read("textures/gui/container/inventory.png"); err == nil {
 		invImg, err := png.Decode(bytes.NewReader(inv))
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		bounds := invImg.Bounds()
 		sin := float64(bounds.Dx()) / 4.41379310345
@@ -101,7 +102,7 @@ func (p *porter) potionEffectsUI() error {
 			}).SubImage(image.Rect(x, startingY, x+cellChangeFactor, startingY+cellChangeFactor))
 
 			if err := internal.WritePng(subImage, "textures/ui/"+effects[i]+"_effect.png", p.out); err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 		}
 

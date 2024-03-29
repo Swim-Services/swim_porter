@@ -11,6 +11,7 @@ import (
 	"github.com/disintegration/imaging"
 	"github.com/gameparrot/tga"
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/porterror"
 	"github.com/swim-services/swim_porter/port/recolor"
 )
 
@@ -31,12 +32,12 @@ func (p *porter) fixZombie() error {
 	if data, err := p.out.Read("textures/entity/zombie/zombie.png"); err == nil {
 		zombieImg, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		bounds := zombieImg.Bounds()
 		newZombie := imaging.Crop(zombieImg, image.Rect(bounds.Min.X, bounds.Min.Y, bounds.Max.X, bounds.Min.Y+(bounds.Dy()/2)))
 		if err := internal.WritePng(newZombie, "textures/entity/zombie/zombie.png", p.out); err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 	}
 	return nil
@@ -47,11 +48,11 @@ func (p *porter) fixSheep() error {
 		if datafur, err := p.out.Read("textures/entity/sheep/sheep_fur.png"); err == nil {
 			sheepImg, err := png.Decode(bytes.NewReader(data))
 			if err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 			sheepFurImg, err := png.Decode(bytes.NewReader(datafur))
 			if err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 			bounds := sheepImg.Bounds()
 			newImg := image.NewRGBA(image.Rect(0, 0, bounds.Dx(), bounds.Dx()))
@@ -76,7 +77,7 @@ func (p *porter) fixSheep() error {
 			p.out.Delete("textures/entity/sheep/sheep_fur.png")
 			writer := bytes.NewBuffer([]byte{})
 			if err := tga.Encode(writer, newImg); err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 			p.out.Write(writer.Bytes(), "textures/entity/sheep/sheep.tga")
 		}
@@ -91,17 +92,17 @@ func (p *porter) fixLeather() error {
 		if data, err := p.out.Read(imgPath); err == nil {
 			img, err := png.Decode(bytes.NewReader(data))
 			if err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 			newImg := recolor.Tint(img, color.RGBA{R: 190, G: 120, B: 80})
 			if err := internal.WritePng(newImg, imgPath, p.out); err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 
 			if overlayData, err := p.out.Read(overlayPath); err == nil {
 				overlay, err := png.Decode(bytes.NewReader(overlayData))
 				if err != nil {
-					return err
+					return porterror.Wrap(err)
 				}
 				drawImg := imaging.Clone(img)
 				if overlay.Bounds().Dx() != drawImg.Bounds().Dx() {
@@ -110,7 +111,7 @@ func (p *porter) fixLeather() error {
 				internal.DrawAlphaOver(drawImg, imaging.Clone(overlay), 1)
 				writer := bytes.NewBuffer([]byte{})
 				if err := tga.Encode(writer, imageTransparencyFix(drawImg, 0)); err != nil {
-					return err
+					return porterror.Wrap(err)
 				}
 				p.out.Write(writer.Bytes(), fmt.Sprintf("textures/models/armor/leather_%d.tga", i))
 				p.out.Delete(overlayPath)

@@ -8,6 +8,7 @@ import (
 	"math"
 
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/porterror"
 	"github.com/swim-services/swim_porter/port/utils"
 )
 
@@ -25,7 +26,7 @@ func (p *porter) xpBar() error {
 	if iconsFile, err := p.out.Read("textures/gui/icons.png"); err == nil {
 		icons, err := png.Decode(bytes.NewReader(iconsFile))
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		iconsSub := icons.(interface {
 			SubImage(r image.Rectangle) image.Image
@@ -40,10 +41,10 @@ func (p *porter) xpBar() error {
 		emptyBar := iconsSub.SubImage(image.Rect(x, y, x+xpBarLength, y+xpBarWidth))
 		fullBar := iconsSub.SubImage(image.Rect(x, y+xpBarWidth, x+xpBarLength, y+(xpBarWidth*2)))
 		if err := internal.WritePng(emptyBar, "textures/ui/experiencebarempty.png", p.out); err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		if err := internal.WritePng(fullBar, "textures/ui/experiencebarfull.png", p.out); err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		p.out.Copy("textures/ui/experiencebarempty.png", "textures/gui/achievements/hotdogempty.png")
 		p.out.Copy("textures/ui/experiencebarfull.png", "textures/gui/achievements/hotdogfull.png")
@@ -70,7 +71,7 @@ func (p *porter) xpJson() error {
 	}
 	emptyBytes, err := json.Marshal(empty)
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	p.out.Write(emptyBytes, "textures/ui/experiencebarempty.json")
 	p.out.Write(emptyBytes, "textures/ui/empty_progress_bar.json")
@@ -81,7 +82,7 @@ func (p *porter) xpJson() error {
 	}
 	fullBytes, err := json.Marshal(full)
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	p.out.Write(fullBytes, "textures/ui/experiencebarfull.json")
 	p.out.Write(fullBytes, "textures/ui/filled_progress_bar.json")

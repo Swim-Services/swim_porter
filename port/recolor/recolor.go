@@ -14,6 +14,7 @@ import (
 
 	"github.com/sandertv/gophertunnel/minecraft/resource"
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/porterror"
 	"github.com/swim-services/swim_porter/port/utils"
 	stripjsoncomments "github.com/trapcodeio/go-strip-json-comments"
 )
@@ -53,18 +54,18 @@ func RecolorRaw(in *utils.MapFS, opts RecolorOptions) error {
 	p := &recolorer{in: in}
 	err := p.doRecolor(opts)
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	return nil
 }
 
 func (p *recolorer) doRecolor(opts RecolorOptions) error {
 	if err := p.manifest(opts.ShowCredits); err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	color, err := utils.ParseHex(opts.NewColor)
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	for file, data := range p.in.RawMap() {
 		name := filepath.Base(file)
@@ -93,10 +94,10 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 			return errors.New("unknown algorithm")
 		}
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		if err := internal.WritePng(newImg, file, p.in); err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 	}
 	return nil
@@ -110,7 +111,7 @@ func (p *recolorer) manifest(showCredits bool) error {
 	var bedrockManifest resource.Manifest
 	err = json.Unmarshal([]byte(stripjsoncomments.Strip(string(bedrockManifestOrig))), &bedrockManifest)
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	utils.ChangeUUID(&bedrockManifest)
 	bedrockManifest.Header.Name += "§r§b Recolor"
@@ -119,7 +120,7 @@ func (p *recolorer) manifest(showCredits bool) error {
 	}
 	bedrockManifestBytes, err := json.Marshal(bedrockManifest)
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	p.in.Write(bedrockManifestBytes, "manifest.json")
 	return nil

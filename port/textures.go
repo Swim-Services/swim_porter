@@ -8,6 +8,7 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/porterror"
 )
 
 func (p *porter) textures() error {
@@ -40,13 +41,13 @@ func (p *porter) grassSide() error {
 		if grassSideOverlay, err := p.out.Read("textures/blocks/grass_side_overlay.png"); err == nil {
 			grassSideTGA, err := internal.SideOverlayTGA(grassSideOverlay, dirt)
 			if err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 			p.out.Write(grassSideTGA, "textures/blocks/grass_side.tga")
 			p.out.Delete("textures/blocks/grass_side.png")
 			snowSideTGA, err := internal.SideOverlayTGA(grassSideOverlay, dirt)
 			if err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 			p.out.Write(snowSideTGA, "textures/blocks/grass_side_snow.tga")
 			p.out.Delete("textures/blocks/grass_side_snowed.png")
@@ -80,11 +81,11 @@ func (p *porter) water(flow bool) error {
 	if data, err := p.out.Read("textures/blocks/water" + waterType + ".png"); err == nil {
 		waterImg, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		greyWater := internal.AlphaMult(imaging.Grayscale(waterImg), 2)
 		if err := internal.WritePng(greyWater, "textures/blocks/water"+waterType+"_grey.png", p.out); err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 	}
 	return nil

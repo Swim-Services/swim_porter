@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/porterror"
 	"github.com/swim-services/swim_porter/port/utils"
 
 	"github.com/disintegration/imaging"
@@ -49,11 +50,11 @@ func (p *porter) guiFix() error {
 	if gui, err := p.out.Read("textures/gui/gui.png"); err == nil {
 		guiImg, err := png.Decode(bytes.NewReader(gui))
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		if guiImg.Bounds().Dy() != 256 {
 			if err := internal.WritePng(imaging.Resize(guiImg, 256, 256, imaging.NearestNeighbor), "textures/gui/gui.png", p.out); err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 		}
 	}
@@ -64,7 +65,7 @@ func (p *porter) crosshair() error {
 	if data, err := p.out.Read("textures/gui/icons.png"); err == nil {
 		img, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		iconsImg := img.(interface {
 			SubImage(r image.Rectangle) image.Image
@@ -75,7 +76,7 @@ func (p *porter) crosshair() error {
 		draw.Draw(canvas, canvas.Bounds(), image.Black, image.Point{}, draw.Src)
 		draw.Draw(canvas, canvas.Bounds(), crosshairImg, image.Point{}, draw.Over)
 		if err := internal.WritePng(canvas, "textures/ui/cross_hair.png", p.out); err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 	}
 	return nil
@@ -85,21 +86,21 @@ func (p *porter) mobileButtons() error {
 	if data, err := p.out.Read("textures/gui/gui.png"); err == nil {
 		gui, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		mobileImgData, err := assetsMapFS.Read("mobile/mobile_buttons.png")
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		mobileImg, err := png.Decode(bytes.NewReader(mobileImgData))
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		canvas := image.NewRGBA(gui.Bounds())
 		draw.Draw(canvas, gui.Bounds(), gui, image.Point{}, draw.Src)
 		draw.Draw(canvas, gui.Bounds(), mobileImg, image.Point{}, draw.Over)
 		if err := internal.WritePng(canvas, "textures/gui/gui.png", p.out); err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 	}
 	return nil
@@ -129,7 +130,7 @@ func (p *porter) containerUI() error {
 	}
 	globalVarData, err := p.out.Read("ui/_global_variables.json")
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	globalVars := string(globalVarData)
 	for filePath, data := range p.out.Dir("assets/minecraft/textures/gui/container/") {
@@ -144,7 +145,7 @@ func (p *porter) containerUI() error {
 
 		img, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		width := img.Bounds().Dx()
 		height := img.Bounds().Dy()
@@ -155,7 +156,7 @@ func (p *porter) containerUI() error {
 		if height != width || !validHeight || !validWidth {
 			dimension = utils.FindClosestDimension(height, width, validDimensions)
 			if err := internal.WritePng(imaging.Resize(img, dimension, dimension, imaging.NearestNeighbor), filePath, p.out); err != nil {
-				return err
+				return porterror.Wrap(err)
 			}
 		}
 		globalVars = strings.ReplaceAll(globalVars, fmt.Sprintf("\"$%s_resolution\": \"256x\",", fileName), fmt.Sprintf("\"$%s_resolution\": \"%dx\",", fileName, dimension))

@@ -2,8 +2,8 @@ package port
 
 import (
 	"encoding/json"
-	"errors"
 
+	"github.com/swim-services/swim_porter/port/porterror"
 	"github.com/swim-services/swim_porter/port/utils"
 
 	"github.com/google/uuid"
@@ -82,7 +82,7 @@ func (p *porter) doPort(opts PortOptions) error {
 func (p *porter) manifest(showCredits bool) error {
 	meta, err := p.in.Read("pack.mcmeta")
 	if err != nil {
-		return errors.New("pack.mcmeta not found")
+		return porterror.New("pack.mcmeta not found")
 	}
 	javaMeta, err := utils.PackMcmeta(meta)
 	var desc string
@@ -112,7 +112,7 @@ func (p *porter) manifest(showCredits bool) error {
 	}
 	bedrockManifestBytes, err := json.Marshal(bedrockManifest)
 	if err != nil {
-		return err
+		return porterror.Wrap(err)
 	}
 	p.out.Write(bedrockManifestBytes, "/manifest.json")
 	return nil

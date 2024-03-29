@@ -7,8 +7,9 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/gameparrot/tga"
 	"github.com/disintegration/imaging"
+	"github.com/gameparrot/tga"
+	"github.com/swim-services/swim_porter/port/porterror"
 )
 
 var filters = map[string]imaging.ResampleFilter{"nearest_neighbor": imaging.NearestNeighbor, "box": imaging.Box, "linear": imaging.Linear, "hermite": imaging.Hermite, "mitchellnetravali": imaging.MitchellNetravali, "catmull_rom": imaging.CatmullRom, "bspline": imaging.BSpline, "gaussian": imaging.Gaussian, "bartlett": imaging.Bartlett, "lanczos": imaging.Lanczos, "hann": imaging.Hann, "hamming": imaging.Hamming, "blackman": imaging.Blackman, "welch": imaging.Welch, "cosine": imaging.Cosine}
@@ -44,7 +45,7 @@ func (p *rescaler) rescaleDir(dir string, filter imaging.ResampleFilter) error {
 			err = tga.Encode(writer, newImg)
 		}
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		p.in.Write(writer.Bytes(), dir+file)
 	}

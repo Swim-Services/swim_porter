@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -9,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/swim-services/swim_porter/port"
+	"github.com/swim-services/swim_porter/port/porterror"
 )
 
 func main() {
@@ -30,7 +32,11 @@ func main() {
 
 	out, err := port.Port(dat, nameNoExt, port.PortOptions{ShowCredits: *showCredits, SkyboxOverride: *skyboxOverride})
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err.Error())
+		if portError, ok := err.(*porterror.PortError); ok {
+			fmt.Println(portError.StackTrace())
+		}
+		os.Exit(-1)
 	}
 	outFile := (*output) + "/" + nameNoExt + ".mcpack"
 	if err := os.WriteFile(outFile, out, 0644); err != nil {

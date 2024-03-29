@@ -9,6 +9,7 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/porterror"
 	"github.com/swim-services/swim_porter/port/recolor"
 	"github.com/swim-services/swim_porter/port/utils"
 )
@@ -63,7 +64,7 @@ func (p *porter) beds() error {
 		planksImg, err := png.Decode(bytes.NewReader(woodPlanksData))
 		planksImg = imaging.Resize(planksImg, headTop.Bounds().Dx(), headTop.Bounds().Dy(), imaging.NearestNeighbor)
 		if err != nil {
-			return err
+			return porterror.Wrap(err)
 		}
 		draw.Draw(newImg, planksImg.Bounds().Add(image.Point{X: baseDraw + feetSide.Bounds().Dx() + feetSide.Bounds().Dx() - feetStart - feetHeight, Y: baseDraw}), planksImg, image.Point{}, draw.Over)
 		draw.Draw(newImg, planksImg.Bounds().Add(image.Point{X: baseDraw + feetSide.Bounds().Dx() + feetSide.Bounds().Dx() - feetStart - feetHeight, Y: baseDraw + feetTop.Bounds().Dx()}), planksImg, image.Point{}, draw.Over)
