@@ -24,12 +24,12 @@ func (p *porter) xp() error {
 func (p *porter) xpBar() error {
 	if iconsFile, err := p.out.Read("textures/gui/icons.png"); err == nil {
 		icons, err := png.Decode(bytes.NewReader(iconsFile))
-		iconsSub := icons.(interface {
-			SubImage(r image.Rectangle) image.Image
-		})
 		if err != nil {
 			return err
 		}
+		iconsSub := icons.(interface {
+			SubImage(r image.Rectangle) image.Image
+		})
 		bounds := icons.Bounds()
 		x := 0
 		y := bounds.Dy() / 4
