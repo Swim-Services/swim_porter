@@ -54,9 +54,10 @@ func (p *porter) title() error {
 	if data, err := p.out.Read("textures/gui/title/minecraft.png"); err == nil {
 		titleImg, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return nil // some packs use a 1x0 image as the title
+			return err
 		}
-		start := internal.LowAlpha(titleImg, titleImg.Bounds().Min)
+		starta := internal.LowNoAlpha(titleImg, titleImg.Bounds().Min, titleImg.Bounds().Max)
+		start := internal.LowAlpha(titleImg, image.Point{titleImg.Bounds().Min.X, starta})
 		start2 := internal.LowNoAlpha(titleImg, image.Point{titleImg.Bounds().Min.X, start}, titleImg.Bounds().Max)
 		left := internal.RightAlpha(titleImg, titleImg.Bounds().Min, image.Point{titleImg.Bounds().Max.X, start})
 		left2 := internal.RightAlpha(titleImg, image.Point{X: titleImg.Bounds().Min.X, Y: start}, image.Point{titleImg.Bounds().Max.X, start * 2})
