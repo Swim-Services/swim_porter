@@ -8,7 +8,6 @@ import (
 	"image/png"
 
 	"github.com/swim-services/swim_porter/port/internal"
-	"github.com/swim-services/swim_porter/port/porterror"
 	"github.com/swim-services/swim_porter/port/utils"
 )
 
@@ -64,9 +63,7 @@ func (p *porter) title() error {
 		newImg := image.NewRGBA(image.Rect(0, 0, left+left2+1, start))
 		draw.Draw(newImg, newImg.Bounds(), titleImg, image.Point{}, draw.Src)
 		draw.Draw(newImg, newImg.Bounds().Add(image.Point{X: left}), titleImg, image.Point{Y: start2}, draw.Src)
-		if err := internal.WritePng(newImg, "textures/ui/title.png", p.out); err != nil {
-			return porterror.Wrap(err)
-		}
+		internal.WritePng(newImg, "textures/ui/title.png", p.out)
 	}
 	return nil
 }
