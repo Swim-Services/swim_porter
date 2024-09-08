@@ -7,20 +7,14 @@ import (
 	"image/draw"
 	"image/png"
 
-	"github.com/disintegration/imaging"
 	"github.com/swim-services/swim_porter/port/internal"
 	"github.com/swim-services/swim_porter/port/utils"
 )
-
-const particleGridSize = 16
-const vanillaParticleSize = 8
 
 //go:embed assets.zip
 var assets []byte
 
 var assetsMapFS *utils.MapFS
-
-var vanillaParticles image.Image
 
 func init() {
 	var err error
@@ -29,15 +23,6 @@ func init() {
 		panic(err)
 	}
 	assetsMapFS = utils.NewMapFS(assetsMap)
-
-	vanillaParticleData, err := assetsMapFS.Read("particle/particles.png")
-	if err != nil {
-		panic(err)
-	}
-	vanillaParticles, err = png.Decode(bytes.NewBuffer(vanillaParticleData))
-	if err != nil {
-		panic(err)
-	}
 }
 
 func (p *porter) misc() error {
@@ -81,45 +66,4 @@ func (p *porter) title() error {
 		internal.WritePng(newImg, "textures/ui/title.png", p.out)
 	}
 	return nil
-}
-
-func (p *porter) particlesFix() {
-	particleData, err := p.out.Read("textures/particle/particles.png")
-	if err != nil {
-		return
-	}
-	particleImg, err := png.Decode(bytes.NewBuffer(particleData))
-	if err != nil {
-		return
-	}
-
-	outImg := imaging.Clone(particleImg)
-
-	particleSizeX := particleImg.Bounds().Dx() / particleGridSize
-	particleSizeY := particleImg.Bounds().Dy() / particleGridSize
-
-	for x := 0; x < particleGridSize; x++ {
-		for y := 0; y < particleGridSize; y++ {
-			currentX := x * particleSizeX
-			currentY := y * particleSizeY
-			isBlank := true
-		T:
-			for xx := 0; xx < particleSizeX; xx++ {
-				for yy := 0; yy < particleSizeY; yy++ {
-					a := outImg.NRGBAAt(currentX+xx, currentY+yy).A
-					if a > 5 {
-						isBlank = false
-						break T
-					}
-				}
-			}
-			if isBlank {
-				vanillaParticle := imaging.Crop(vanillaParticles, image.Rect(x*vanillaParticleSize, y*vanillaParticleSize, (x+1)*vanillaParticleSize, (y+1)*vanillaParticleSize))
-				vanillaParticle = imaging.Resize(vanillaParticle, particleSizeX, particleSizeY, imaging.NearestNeighbor)
-				draw.Draw(outImg, image.Rect(currentX, currentY, currentX+particleSizeX, currentY+particleSizeY), vanillaParticle, image.Point{}, draw.Src)
-			}
-		}
-	}
-
-	internal.WritePng(outImg, "textures/particle/particles.png", p.out)
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/port/particlefix"
 	"github.com/swim-services/swim_porter/port/porterror"
 )
 
@@ -20,7 +21,7 @@ func (p *porter) textures() error {
 	p.chestFix()
 	p.fire()
 	p.painting()
-	p.particlesFix()
+	particlefix.DoFix(p.out)
 	if err := p.grassSide(); err != nil {
 		return err
 	}
