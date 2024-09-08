@@ -2,7 +2,7 @@ package utils
 
 import (
 	"github.com/google/uuid"
-	"github.com/sandertv/gophertunnel/minecraft/resource"
+	"github.com/swim-services/swim_porter/port/resource"
 )
 
 func ChangeUUID(manifest *resource.Manifest) {

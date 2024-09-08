@@ -6,8 +6,8 @@ import (
 	"reflect"
 
 	"github.com/disintegration/imaging"
-	"github.com/sandertv/gophertunnel/minecraft/resource"
 	"github.com/swim-services/swim_porter/port/porterror"
+	"github.com/swim-services/swim_porter/port/resource"
 	"github.com/swim-services/swim_porter/port/utils"
 	stripjsoncomments "github.com/trapcodeio/go-strip-json-comments"
 )
