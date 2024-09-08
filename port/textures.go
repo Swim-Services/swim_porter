@@ -20,6 +20,7 @@ func (p *porter) textures() error {
 	p.chestFix()
 	p.fire()
 	p.painting()
+	p.particlesFix()
 	if err := p.grassSide(); err != nil {
 		return err
 	}
