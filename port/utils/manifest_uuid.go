@@ -6,7 +6,7 @@ import (
 )
 
 func ChangeUUID(manifest *resource.Manifest) {
-	manifest.Header.UUID = uuid.NewString()
+	manifest.Header.UUID = uuid.New()
 	for _, module := range manifest.Modules {
 		module.UUID = uuid.NewString()
 	}

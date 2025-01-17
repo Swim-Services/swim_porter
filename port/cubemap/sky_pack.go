@@ -32,7 +32,7 @@ func SkyPack(name string, img [6]image.Image, action string) ([]byte, error) {
 		Header: resource.Header{
 			Name:               name + " Sky",
 			Description:        desc,
-			UUID:               uuid.New().String(),
+			UUID:               uuid.New(),
 			Version:            [3]int{2, 0, 0},
 			MinimumGameVersion: [3]int{1, 12, 1},
 		},

@@ -99,7 +99,7 @@ func (p *porter) manifest(showCredits bool) error {
 		Header: resource.Header{
 			Name:               p.name,
 			Description:        desc,
-			UUID:               uuid.New().String(),
+			UUID:               uuid.New(),
 			Version:            [3]int{2, 0, 0},
 			MinimumGameVersion: [3]int{1, 12, 1},
 		},
