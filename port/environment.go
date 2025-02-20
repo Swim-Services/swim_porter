@@ -2,6 +2,7 @@ package port
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"image"
 	"image/png"
@@ -9,6 +10,7 @@ import (
 	"github.com/swim-services/swim_porter/port/cubemap"
 	"github.com/swim-services/swim_porter/port/internal"
 	"github.com/swim-services/swim_porter/port/porterror"
+	"golang.org/x/sync/errgroup"
 )
 
 func (p *porter) environment(skyboxOverride string) error {
@@ -53,11 +55,23 @@ func (p *porter) sky(skyboxOverride string) error {
 	if !found {
 		return nil
 	}
+
 	cubemapImages := cubemap.BuildCubemap(skyMap)
-	for i, img := range cubemapImages {
-		if err := internal.WritePng(img, fmt.Sprintf("textures/environment/overworld_cubemap/cubemap_%d.png", i), p.out); err != nil {
-			return porterror.Wrap(err)
-		}
+
+	if p.opts.OffsetSky {
+		equi := cubemap.CubemapToEquirectangular(cubemapImages, 5)
+		cubemapImages = cubemap.CubemapFromImage(equi, cubemap.CubemapImageOpts{VertOffset: 0.41, DivAmt: 5})
 	}
-	return nil
+
+	errs, _ := errgroup.WithContext(context.Background())
+	for i, img := range cubemapImages {
+		ii := i
+		errs.Go(func() error {
+			if err := internal.WritePng(img, fmt.Sprintf("textures/environment/overworld_cubemap/cubemap_%d.png", ii), p.out); err != nil {
+				return porterror.Wrap(err)
+			}
+			return nil
+		})
+	}
+	return errs.Wait()
 }

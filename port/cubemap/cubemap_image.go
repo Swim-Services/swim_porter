@@ -4,18 +4,33 @@ import (
 	"image"
 	"image/draw"
 	"math"
+	"sync"
 )
 
 var cubemapNumber = [6]int{0, 2, 1, 3, 4, 5}
 
-func CubemapFromImage(in image.Image, vertOffset float64) [6]image.Image {
+type CubemapImageOpts struct {
+	DivAmt     float64
+	VertOffset float64
+}
+
+func CubemapFromImage(in image.Image, opts CubemapImageOpts) [6]image.Image {
+	if opts.DivAmt == 0 {
+		opts.DivAmt = 4
+	}
 	img := image.NewRGBA(in.Bounds())
 	draw.Draw(img, img.Bounds(), in, image.Point{}, draw.Src)
 	var imgs [6]image.Image
+	wg := sync.WaitGroup{}
+	wg.Add(6)
 	for i := 0; i < 6; i++ {
-		newImg := renderFace(img, i, math.Pi, i, 2048, vertOffset)
-		imgs[cubemapNumber[i]] = newImg
+		go func(i int) {
+			newImg := renderFace(img, i, math.Pi, i, 2048, opts)
+			imgs[cubemapNumber[i]] = newImg
+			wg.Done()
+		}(i)
 	}
+	wg.Wait()
 	return imgs
 }
 
@@ -82,16 +97,17 @@ func copyPixelNearest(read, write *image.RGBA) func(float64, float64, int) {
 	}
 }
 
-func renderFace(readData *image.RGBA, face int, rotation float64, num int, maxWidth float64, vertOffset float64) *image.RGBA {
+func renderFace(readData *image.RGBA, face int, rotation float64, num int, maxWidth float64, opts CubemapImageOpts) *image.RGBA {
 	num += 1
-	divAmt := 4.0
+	wantWidth := float64(readData.Bounds().Dx()) / opts.DivAmt
 	switch face {
 	case 5:
-		divAmt -= vertOffset * 2
+		wantWidth += opts.VertOffset * wantWidth
 	case 4:
-		divAmt += vertOffset * 2
+		wantWidth -= opts.VertOffset * wantWidth
 	}
-	faceWidth := math.Min(maxWidth, float64(readData.Bounds().Dx())/divAmt)
+
+	faceWidth := math.Min(maxWidth, wantWidth)
 	faceHeight := faceWidth
 
 	cube := &cube{}
@@ -107,7 +123,7 @@ func renderFace(readData *image.RGBA, face int, rotation float64, num int, maxWi
 
 			writeData.Pix[to+3] = 255
 			orientation(cube, (2*(float64(x)+0.5)/faceWidth - 1), (2*(float64(y)+0.5)/faceHeight - 1))
-			cube.z += vertOffset
+			cube.z += opts.VertOffset
 
 			r := math.Sqrt(cube.x*cube.x + cube.y*cube.y + cube.z*cube.z)
 			lon := mod(math.Atan2(cube.y, cube.x)+rotation, 2*math.Pi)

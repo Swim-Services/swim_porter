@@ -59,13 +59,13 @@ func (p *porter) grassSide() error {
 }
 
 func (p *porter) itemsFix() {
-	for path, data := range p.out.Dir("textures/items") {
+	internal.ParallelMap(p.out.Dir("textures/items"), func(path string, data []byte) {
 		if strings.HasSuffix(strings.ToLower(path), ".png") {
 			if img, err := png.Decode(bytes.NewReader(data)); err == nil {
 				internal.WritePng(imageTransparencyFix(img, 127), "textures/items"+path, p.out)
 			}
 		}
-	}
+	})
 }
 
 func (p *porter) fire() {

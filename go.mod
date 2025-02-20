@@ -12,6 +12,7 @@ require (
 	github.com/klauspost/compress v1.17.11
 	github.com/sandertv/gophertunnel v1.43.1
 	github.com/trapcodeio/go-strip-json-comments v1.0.11
+	golang.org/x/sync v0.11.0
 )
 
 require (

@@ -30,7 +30,7 @@ func main() {
 	name := filepath.Base(*input)
 	nameNoExt := name[:strings.LastIndex(name, path.Ext(name))]
 
-	out, err := port.Port(dat, nameNoExt, port.PortOptions{ShowCredits: *showCredits, SkyboxOverride: *skyboxOverride})
+	out, err := port.Port(dat, nameNoExt, port.PortOptions{ShowCredits: *showCredits, SkyboxOverride: *skyboxOverride, OffsetSky: true})
 	if err != nil {
 		log.Println(err.Error())
 		if portError, ok := err.(*porterror.PortError); ok {

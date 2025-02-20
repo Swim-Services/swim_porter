@@ -13,12 +13,14 @@ import (
 type PortOptions struct {
 	ShowCredits    bool
 	SkyboxOverride string
+	OffsetSky      bool
 }
 
 type porter struct {
 	in   *utils.MapFS
 	out  *utils.MapFS
 	name string
+	opts PortOptions
 }
 
 func Port(in []byte, name string, opts PortOptions) ([]byte, error) {
@@ -38,7 +40,7 @@ func Port(in []byte, name string, opts PortOptions) ([]byte, error) {
 }
 
 func PortRaw(in *utils.MapFS, name string, opts PortOptions) (*utils.MapFS, error) {
-	p := &porter{in: in, out: utils.NewMapFS(make(map[string][]byte)), name: name}
+	p := &porter{in: in, out: utils.NewMapFS(make(map[string][]byte)), name: name, opts: opts}
 	err := p.doPort(opts)
 	if err != nil {
 		return nil, err
