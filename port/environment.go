@@ -59,8 +59,13 @@ func (p *porter) sky(skyboxOverride string) error {
 	cubemapImages := cubemap.BuildCubemap(skyMap)
 
 	if p.opts.OffsetSky {
-		equi := cubemap.CubemapToEquirectangular(cubemapImages, 5)
-		cubemapImages = cubemap.CubemapFromImage(equi, cubemap.CubemapImageOpts{VertOffset: 0.41, DivAmt: 5})
+		totalWidth := 0
+		for _, img := range cubemapImages {
+			totalWidth += img.Bounds().Dx()
+		}
+		multAmt := max(4.5, min(8, float64(totalWidth)/1024))
+		equi := cubemap.CubemapToEquirectangular(cubemapImages, multAmt)
+		cubemapImages = cubemap.CubemapFromImage(equi, cubemap.CubemapImageOpts{VertOffset: 0.41, DivAmt: multAmt})
 	}
 
 	errs, _ := errgroup.WithContext(context.Background())
