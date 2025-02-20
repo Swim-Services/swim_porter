@@ -8,12 +8,12 @@ import (
 
 var cubemapNumber = [6]int{0, 2, 1, 3, 4, 5}
 
-func CubemapFromImage(in image.Image) [6]image.Image {
+func CubemapFromImage(in image.Image, vertOffset float64) [6]image.Image {
 	img := image.NewRGBA(in.Bounds())
 	draw.Draw(img, img.Bounds(), in, image.Point{}, draw.Src)
 	var imgs [6]image.Image
 	for i := 0; i < 6; i++ {
-		newImg := renderFace(img, i, math.Pi, i, 2048)
+		newImg := renderFace(img, i, math.Pi, i, 2048, vertOffset)
 		imgs[cubemapNumber[i]] = newImg
 	}
 	return imgs
@@ -82,9 +82,16 @@ func copyPixelNearest(read, write *image.RGBA) func(float64, float64, int) {
 	}
 }
 
-func renderFace(readData *image.RGBA, face int, rotation float64, num int, maxWidth float64) *image.RGBA {
+func renderFace(readData *image.RGBA, face int, rotation float64, num int, maxWidth float64, vertOffset float64) *image.RGBA {
 	num += 1
-	faceWidth := math.Min(maxWidth, float64(readData.Bounds().Dx())/4)
+	divAmt := 4.0
+	switch face {
+	case 5:
+		divAmt -= vertOffset * 2
+	case 4:
+		divAmt += vertOffset * 2
+	}
+	faceWidth := math.Min(maxWidth, float64(readData.Bounds().Dx())/divAmt)
 	faceHeight := faceWidth
 
 	cube := &cube{}
@@ -100,6 +107,7 @@ func renderFace(readData *image.RGBA, face int, rotation float64, num int, maxWi
 
 			writeData.Pix[to+3] = 255
 			orientation(cube, (2*(float64(x)+0.5)/faceWidth - 1), (2*(float64(y)+0.5)/faceHeight - 1))
+			cube.z += vertOffset
 
 			r := math.Sqrt(cube.x*cube.x + cube.y*cube.y + cube.z*cube.z)
 			lon := mod(math.Atan2(cube.y, cube.x)+rotation, 2*math.Pi)
