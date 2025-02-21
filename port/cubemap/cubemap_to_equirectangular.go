@@ -68,8 +68,8 @@ func CubemapToEquirectangular(cubeMap [6]image.Image, multAmt float64) image.Ima
 				}
 
 				img := nrgbaImages[sourceImageInd]
-				pixX := min(int(math.Abs(xPixel)*float64(img.Bounds().Dx())), img.Bounds().Dx()-1)
-				pixY := min(int(math.Abs(yPixel)*float64(img.Bounds().Dy())), img.Bounds().Dy()-1)
+				pixX := min(int(math.Round(math.Abs(xPixel)*float64(img.Bounds().Dx()))), img.Bounds().Dx()-1)
+				pixY := min(int(math.Round(math.Abs(yPixel)*float64(img.Bounds().Dy()))), img.Bounds().Dy()-1)
 				col := img.NRGBAAt(pixX, pixY)
 				outImg.SetNRGBA(i, j, col)
 			}
