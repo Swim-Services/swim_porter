@@ -21,13 +21,12 @@ import (
 
 type RecolorOptions struct {
 	ShowCredits bool
-	NewColor    string
+	NewColor    color.RGBA
 	Alg         string
 }
 
 type recolorer struct {
-	in    *utils.MapFS
-	color color.RGBA
+	in *utils.MapFS
 }
 
 func Recolor(in []byte, opts RecolorOptions) ([]byte, error) {
@@ -63,10 +62,6 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 	if err := p.manifest(opts.ShowCredits); err != nil {
 		return porterror.Wrap(err)
 	}
-	color, err := utils.ParseHex(opts.NewColor)
-	if err != nil {
-		return porterror.Wrap(err)
-	}
 	for file, data := range p.in.RawMap() {
 		name := filepath.Base(file)
 		ext := path.Ext(name)
@@ -85,11 +80,11 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 		err = nil
 		switch opts.Alg {
 		case "tint":
-			newImg = Tint(img, color)
+			newImg = Tint(img, opts.NewColor)
 		case "hue":
-			newImg, err = HueShift(img, float64(GetHue(int(color.R), int(color.G), int(color.B))))
+			newImg, err = HueShift(img, float64(GetHue(int(opts.NewColor.R), int(opts.NewColor.G), int(opts.NewColor.B))))
 		case "gray_tint":
-			newImg = GrayTint(img, color)
+			newImg = GrayTint(img, opts.NewColor)
 		default:
 			return errors.New("unknown algorithm")
 		}
