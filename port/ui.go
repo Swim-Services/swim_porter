@@ -10,9 +10,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/swim-services/swim_porter/port/internal"
-	"github.com/swim-services/swim_porter/port/porterror"
-	"github.com/swim-services/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/porterror"
+	"github.com/swim-services/swim_porter/utils"
 
 	"github.com/disintegration/imaging"
 )

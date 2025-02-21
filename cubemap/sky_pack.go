@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/resource"
-	"github.com/swim-services/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/utils"
 )
 
 func SkyPack(name string, img [6]image.Image, action string) ([]byte, error) {

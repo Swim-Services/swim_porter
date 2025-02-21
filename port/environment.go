@@ -7,9 +7,9 @@ import (
 	"image"
 	"image/png"
 
-	"github.com/swim-services/swim_porter/port/cubemap"
-	"github.com/swim-services/swim_porter/port/internal"
-	"github.com/swim-services/swim_porter/port/porterror"
+	"github.com/swim-services/swim_porter/cubemap"
+	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/porterror"
 	"golang.org/x/sync/errgroup"
 )
 

@@ -7,9 +7,9 @@ import (
 	"image/png"
 	"math"
 
-	"github.com/swim-services/swim_porter/port/internal"
-	"github.com/swim-services/swim_porter/port/porterror"
-	"github.com/swim-services/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/porterror"
+	"github.com/swim-services/swim_porter/utils"
 )
 
 func (p *porter) xp() error {

@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/swim-services/swim_porter/port"
-	"github.com/swim-services/swim_porter/port/porterror"
+	"github.com/swim-services/swim_porter/porterror"
 )
 
 func main() {

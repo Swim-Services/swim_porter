@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/disintegration/imaging"
-	"github.com/swim-services/swim_porter/port/internal"
-	"github.com/swim-services/swim_porter/port/particlefix"
-	"github.com/swim-services/swim_porter/port/porterror"
+	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/particlefix"
+	"github.com/swim-services/swim_porter/porterror"
 )
 
 func (p *porter) textures() error {

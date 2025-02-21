@@ -3,8 +3,8 @@ package port
 import (
 	"encoding/json"
 
-	"github.com/swim-services/swim_porter/port/porterror"
-	"github.com/swim-services/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/porterror"
+	"github.com/swim-services/swim_porter/utils"
 
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/resource"

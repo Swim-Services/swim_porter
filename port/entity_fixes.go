@@ -10,9 +10,9 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/gameparrot/tga"
-	"github.com/swim-services/swim_porter/port/internal"
-	"github.com/swim-services/swim_porter/port/porterror"
-	"github.com/swim-services/swim_porter/port/recolor"
+	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/porterror"
+	"github.com/swim-services/swim_porter/recolor"
 )
 
 func (p *porter) entityFixes() error {

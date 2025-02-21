@@ -8,9 +8,9 @@ import (
 	"image/png"
 
 	"github.com/disintegration/imaging"
-	"github.com/swim-services/swim_porter/port/internal"
-	"github.com/swim-services/swim_porter/port/resource"
-	"github.com/swim-services/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/resource"
+	"github.com/swim-services/swim_porter/utils"
 	stripjsoncomments "github.com/trapcodeio/go-strip-json-comments"
 )
 

@@ -7,8 +7,8 @@ import (
 	"image/draw"
 	"image/png"
 
-	"github.com/swim-services/swim_porter/port/internal"
-	"github.com/swim-services/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/utils"
 )
 
 //go:embed assets.zip

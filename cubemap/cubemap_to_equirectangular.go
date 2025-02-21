@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/disintegration/imaging"
-	"github.com/swim-services/swim_porter/port/internal"
+	"github.com/swim-services/swim_porter/internal"
 )
 
 func CubemapToEquirectangular(cubeMap [6]image.Image, multAmt float64) image.Image {
@@ -35,32 +35,34 @@ func CubemapToEquirectangular(cubeMap [6]image.Image, multAmt float64) image.Ima
 
 				var sourceImageInd int
 				var xPixel, yPixel float64
-
+				shouldFlip := false
 				xa := x / a
 				ya := y / a
 				za := z / a
 				if xa == 1 {
-					sourceImageInd = 1
+					sourceImageInd = 3
 					xPixel = ((za + 1) / 2) - 1
 					yPixel = (ya + 1) / 2
 				} else if xa == -1 {
-					sourceImageInd = 3
+					sourceImageInd = 1
 					xPixel = (za + 1) / 2
 					yPixel = (ya + 1) / 2
 				} else if ya == 1 {
+					shouldFlip = true
 					sourceImageInd = 5
 					xPixel = (xa + 1) / 2
 					yPixel = ((za + 1) / 2) - 1
 				} else if ya == -1 {
+					shouldFlip = true
 					sourceImageInd = 4
 					xPixel = (xa + 1) / 2
 					yPixel = (za + 1) / 2
 				} else if za == 1 {
-					sourceImageInd = 0
+					sourceImageInd = 2
 					xPixel = (xa + 1) / 2
 					yPixel = (ya + 1) / 2
 				} else if za == -1 {
-					sourceImageInd = 2
+					sourceImageInd = 0
 					xPixel = ((xa + 1) / 2) - 1
 					yPixel = (ya + 1) / 2
 				} else {
@@ -68,8 +70,12 @@ func CubemapToEquirectangular(cubeMap [6]image.Image, multAmt float64) image.Ima
 				}
 
 				img := nrgbaImages[sourceImageInd]
-				pixX := min(int(math.Round(math.Abs(xPixel)*float64(img.Bounds().Dx()))), img.Bounds().Dx()-1)
-				pixY := min(int(math.Round(math.Abs(yPixel)*float64(img.Bounds().Dy()))), img.Bounds().Dy()-1)
+				pixX := min(int(math.Floor(math.Abs(xPixel)*float64(img.Bounds().Dx()))), img.Bounds().Dx()-1)
+				pixY := min(int(math.Floor(math.Abs(yPixel)*float64(img.Bounds().Dy()))), img.Bounds().Dy()-1)
+				if shouldFlip {
+					pixX = img.Bounds().Dx() - pixX - 1
+					pixY = img.Bounds().Dy() - pixY - 1
+				}
 				col := img.NRGBAAt(pixX, pixY)
 				outImg.SetNRGBA(i, j, col)
 			}

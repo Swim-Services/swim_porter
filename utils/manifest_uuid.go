@@ -2,12 +2,12 @@ package utils
 
 import (
 	"github.com/google/uuid"
-	"github.com/swim-services/swim_porter/port/resource"
+	"github.com/swim-services/swim_porter/resource"
 )
 
 func ChangeUUID(manifest *resource.Manifest) {
 	manifest.Header.UUID = uuid.New()
-	for _, module := range manifest.Modules {
-		module.UUID = uuid.NewString()
+	for i := range manifest.Modules {
+		manifest.Modules[i].UUID = uuid.NewString()
 	}
 }

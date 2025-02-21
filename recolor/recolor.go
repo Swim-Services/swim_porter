@@ -12,10 +12,10 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/swim-services/swim_porter/port/internal"
-	"github.com/swim-services/swim_porter/port/porterror"
-	"github.com/swim-services/swim_porter/port/resource"
-	"github.com/swim-services/swim_porter/port/utils"
+	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/porterror"
+	"github.com/swim-services/swim_porter/resource"
+	"github.com/swim-services/swim_porter/utils"
 	stripjsoncomments "github.com/trapcodeio/go-strip-json-comments"
 )
 
