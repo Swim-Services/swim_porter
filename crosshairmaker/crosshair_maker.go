@@ -12,13 +12,13 @@ import (
 	"github.com/swim-services/swim_porter/utils"
 )
 
-func CrosshairPack(name string, img image.Image, scale float64) ([]byte, error) {
+func CrosshairPack(name string, img image.Image, scale float64, isColor bool) ([]byte, error) {
 	fs := utils.NewMapFS(make(map[string][]byte))
 	if err := internal.WritePng(img, "pack_icon.png", fs); err != nil {
 		return []byte{}, err
 	}
 
-	if err := internal.WritePng(makeCrosshairFromImage(img, scale), "textures/ui/cross_hair.png", fs); err != nil {
+	if err := internal.WritePng(makeCrosshairFromImage(img, scale, isColor), "textures/ui/cross_hair.png", fs); err != nil {
 		return []byte{}, err
 	}
 	var desc = name + "\n§aCrosshair made by §dSwim Crosshair Maker §f| §bdiscord.gg/swim"
@@ -50,7 +50,7 @@ func CrosshairPack(name string, img image.Image, scale float64) ([]byte, error) 
 	return rawOut, nil
 }
 
-func makeCrosshairFromImage(img image.Image, textureScale float64) image.Image {
+func makeCrosshairFromImage(img image.Image, textureScale float64, isColor bool) image.Image {
 	size := min(128, img.Bounds().Dx())
 	textureSize := int(float64(size) * textureScale)
 	offset := (size - textureSize) / 2
@@ -58,8 +58,11 @@ func makeCrosshairFromImage(img image.Image, textureScale float64) image.Image {
 	in := imaging.Resize(img, textureSize, textureSize, imaging.NearestNeighbor)
 	for x := in.Bounds().Min.X; x < in.Bounds().Max.X; x++ {
 		for y := in.Bounds().Min.Y; y < in.Bounds().Max.Y; y++ {
-			if in.RGBA64At(x, y).A > 200 {
+			if isColor {
+				out.Set(x+offset, y+offset, in.At(x, y))
+			} else if in.NRGBAAt(x, y).A > 10 {
 				out.Set(x+offset, y+offset, color.White)
+
 			}
 		}
 	}
