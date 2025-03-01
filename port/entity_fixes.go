@@ -32,7 +32,7 @@ func (p *porter) fixZombie() error {
 	if data, err := p.out.Read("textures/entity/zombie/zombie.png"); err == nil {
 		zombieImg, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return porterror.Wrap(err)
+			return porterror.Wrap(err).WithMessage("read image textures/entity/zombie/zombie.png")
 		}
 		bounds := zombieImg.Bounds()
 		newZombie := imaging.Crop(zombieImg, image.Rect(bounds.Min.X, bounds.Min.Y, bounds.Max.X, bounds.Min.Y+(bounds.Dy()/2)))
@@ -48,11 +48,11 @@ func (p *porter) fixSheep() error {
 		if datafur, err := p.out.Read("textures/entity/sheep/sheep_fur.png"); err == nil {
 			sheepImg, err := png.Decode(bytes.NewReader(data))
 			if err != nil {
-				return porterror.Wrap(err)
+				return porterror.Wrap(err).WithMessage("read image textures/entity/sheep/sheep.png")
 			}
 			sheepFurImg, err := png.Decode(bytes.NewReader(datafur))
 			if err != nil {
-				return porterror.Wrap(err)
+				return porterror.Wrap(err).WithMessage("read image textures/entity/sheep/sheep_fur.png")
 			}
 			bounds := sheepImg.Bounds()
 			newImg := image.NewRGBA(image.Rect(0, 0, bounds.Dx(), bounds.Dx()))
@@ -92,7 +92,7 @@ func (p *porter) fixLeather() error {
 		if data, err := p.out.Read(imgPath); err == nil {
 			img, err := png.Decode(bytes.NewReader(data))
 			if err != nil {
-				return porterror.Wrap(err)
+				return porterror.Wrap(err).WithMessage("read image textures/models/armor/cloth_%d.png", i)
 			}
 			newImg := recolor.Tint(img, color.RGBA{R: 190, G: 120, B: 80})
 			if err := internal.WritePng(newImg, imgPath, p.out); err != nil {
@@ -102,7 +102,7 @@ func (p *porter) fixLeather() error {
 			if overlayData, err := p.out.Read(overlayPath); err == nil {
 				overlay, err := png.Decode(bytes.NewReader(overlayData))
 				if err != nil {
-					return porterror.Wrap(err)
+					return porterror.Wrap(err).WithMessage("read image textures/models/armor/leather_layer_%d_overlay.png", i)
 				}
 				drawImg := imaging.Clone(img)
 				if overlay.Bounds().Dx() != drawImg.Bounds().Dx() {

@@ -54,28 +54,52 @@ func (p *porter) doPort(opts PortOptions) error {
 	}
 	p.icon()
 	if err := p.textures(); err != nil {
+		if portError, ok := err.(*porterror.PortError); ok {
+			return portError.WithMessage("port textures")
+		}
 		return err
 	}
 	if err := p.pots(); err != nil {
+		if portError, ok := err.(*porterror.PortError); ok {
+			return portError.WithMessage("port potions")
+		}
 		return err
 	}
 	if err := p.xp(); err != nil {
+		if portError, ok := err.(*porterror.PortError); ok {
+			return portError.WithMessage("port xp bar")
+		}
 		return err
 	}
 	if err := p.ui(); err != nil {
+		if portError, ok := err.(*porterror.PortError); ok {
+			return portError.WithMessage("port ui")
+		}
 		return err
 	}
 	if err := p.environment(opts.SkyboxOverride); err != nil {
+		if portError, ok := err.(*porterror.PortError); ok {
+			return portError.WithMessage("port environment")
+		}
 		return err
 	}
 	if err := p.misc(); err != nil {
+		if portError, ok := err.(*porterror.PortError); ok {
+			return portError.WithMessage("port misc")
+		}
 		return err
 	}
 	p.itemsFix()
 	if err := p.beds(); err != nil {
+		if portError, ok := err.(*porterror.PortError); ok {
+			return portError.WithMessage("port beds")
+		}
 		return err
 	}
 	if err := p.entityFixes(); err != nil {
+		if portError, ok := err.(*porterror.PortError); ok {
+			return portError.WithMessage("entity fixes")
+		}
 		return err
 	}
 	return nil
@@ -84,7 +108,7 @@ func (p *porter) doPort(opts PortOptions) error {
 func (p *porter) manifest(showCredits bool) error {
 	meta, err := p.in.Read("pack.mcmeta")
 	if err != nil {
-		return porterror.New("pack.mcmeta not found")
+		return porterror.Wrap(porterror.ErrMcmetaNotFound)
 	}
 	javaMeta, err := utils.PackMcmeta(meta)
 	var desc string

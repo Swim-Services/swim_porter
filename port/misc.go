@@ -8,6 +8,7 @@ import (
 	"image/png"
 
 	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/utils"
 )
 
@@ -53,7 +54,7 @@ func (p *porter) title() error {
 	if data, err := p.out.Read("textures/gui/title/minecraft.png"); err == nil {
 		titleImg, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return err
+			return porterror.Wrap(err).WithMessage("read image textures/gui/title/minecraft.png")
 		}
 		starta := internal.LowNoAlpha(titleImg, titleImg.Bounds().Min, titleImg.Bounds().Max)
 		start := internal.LowAlpha(titleImg, image.Point{titleImg.Bounds().Min.X, starta})

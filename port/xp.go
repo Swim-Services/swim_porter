@@ -26,7 +26,7 @@ func (p *porter) xpBar() error {
 	if iconsFile, err := p.out.Read("textures/gui/icons.png"); err == nil {
 		icons, err := png.Decode(bytes.NewReader(iconsFile))
 		if err != nil {
-			return porterror.Wrap(err)
+			return porterror.Wrap(err).WithMessage("read image textures/gui/icons.png")
 		}
 		iconsSub := icons.(interface {
 			SubImage(r image.Rectangle) image.Image

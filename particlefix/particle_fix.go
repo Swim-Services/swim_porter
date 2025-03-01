@@ -4,16 +4,15 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
-	"errors"
 	"image"
 	"image/draw"
 	"image/png"
 
 	"github.com/disintegration/imaging"
 	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/resource"
 	"github.com/swim-services/swim_porter/utils"
-	stripjsoncomments "github.com/trapcodeio/go-strip-json-comments"
 )
 
 const particleGridSize = 16
@@ -60,7 +59,7 @@ func DoFix(in *utils.MapFS) error {
 	}
 	particleImg, err := png.Decode(bytes.NewBuffer(particleData))
 	if err != nil {
-		return err
+		return porterror.Wrap(err).WithMessage("read image textures/particle/particles.png")
 	}
 
 	outImg := imaging.Clone(particleImg)
@@ -115,10 +114,9 @@ func (p *particlefixer) doParticleFix() error {
 func (p *particlefixer) manifest() error {
 	bedrockManifestOrig, err := p.in.Read("manifest.json")
 	if err != nil {
-		return errors.New("manifest.json not found")
+		return porterror.Wrap(porterror.ErrManifestNotFound)
 	}
-	var bedrockManifest resource.Manifest
-	err = json.Unmarshal([]byte(stripjsoncomments.Strip(string(bedrockManifestOrig))), &bedrockManifest)
+	bedrockManifest, err := resource.UnmarshalJSON(bedrockManifestOrig)
 	if err != nil {
 		return err
 	}

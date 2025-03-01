@@ -1,7 +1,11 @@
 package resource
 
 import (
+	"encoding/json"
+
 	gtresource "github.com/sandertv/gophertunnel/minecraft/resource"
+	"github.com/swim-services/swim_porter/jsonnewline"
+	stripjsoncomments "github.com/trapcodeio/go-strip-json-comments"
 )
 
 // Manifest contains all the basic information about the pack that Minecraft needs to identify it.
@@ -28,4 +32,14 @@ type Subpack struct {
 	FolderName string `json:"folder_name,omitempty"`
 	Name       string `json:"name,omitempty"`
 	MemoryTier int    `json:"memory_tier,omitempty"`
+}
+
+func UnmarshalJSON(jsonStr []byte) (Manifest, error) {
+	commentStripped := stripjsoncomments.Strip(string(jsonStr))
+	newlineFixed := jsonnewline.NewLineToEscape(commentStripped)
+	manifest := Manifest{}
+	if err := json.Unmarshal([]byte(newlineFixed), &manifest); err != nil {
+		return Manifest{}, err
+	}
+	return manifest, nil
 }

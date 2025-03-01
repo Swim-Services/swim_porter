@@ -2,6 +2,7 @@ package internal
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -42,7 +43,7 @@ func SideOverlayTGA(overlay, base []byte) ([]byte, error) {
 func WritePng(img image.Image, path string, fs *utils.MapFS) error {
 	writer := bytes.NewBuffer([]byte{})
 	if err := png.Encode(writer, img); err != nil {
-		return err
+		return fmt.Errorf("write image %s: %w", path, err)
 	}
 	fs.Write(writer.Bytes(), path)
 	return nil

@@ -98,7 +98,7 @@ func MakeOverlay(in image.Image, name string, addSlots bool) ([]byte, error) {
 }
 
 func (p *invmaker) makeGifInventory() error {
-	out := image.NewRGBA(image.Rect(0, 0, max(out_x, out_x*int(math.Ceil(float64(len(p.in.Image))/40))), out_y*min(40, len(p.in.Image))))
+	out := image.NewNRGBA(image.Rect(0, 0, max(out_x, out_x*int(math.Ceil(float64(len(p.in.Image))/40))), out_y*min(40, len(p.in.Image))))
 	for i, frame := range p.splitGif {
 		nrgbaImg := (frame)
 		startx := (i / 40) * out_x
@@ -109,7 +109,7 @@ func (p *invmaker) makeGifInventory() error {
 	if p.addSlots {
 		overlay = slots
 	} else {
-		overlay = image.NewRGBA(image.Rect(0, 0, out_x, out_y))
+		overlay = image.NewNRGBA(image.Rect(0, 0, out_x, out_y))
 	}
 	blankWriter := bytes.NewBuffer([]byte{})
 	if err := png.Encode(blankWriter, overlay); err != nil {

@@ -9,9 +9,9 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/swim-services/swim_porter/internal"
+	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/resource"
 	"github.com/swim-services/swim_porter/utils"
-	stripjsoncomments "github.com/trapcodeio/go-strip-json-comments"
 )
 
 type fontfixer struct {
@@ -51,7 +51,7 @@ func (p *fontfixer) doFontFix() error {
 	if data, err := p.in.Read("font/default8.png"); err == nil {
 		img, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return err
+			return porterror.Wrap(err).WithMessage("read image font/default8.png")
 		}
 		bounds := img.Bounds()
 		if bounds.Dx() == 128 || bounds.Dx() == 1152 {
@@ -79,10 +79,9 @@ func (p *fontfixer) doFontFix() error {
 func (p *fontfixer) manifest() error {
 	bedrockManifestOrig, err := p.in.Read("manifest.json")
 	if err != nil {
-		return errors.New("manifest.json not found")
+		return porterror.Wrap(porterror.ErrManifestNotFound)
 	}
-	var bedrockManifest resource.Manifest
-	err = json.Unmarshal([]byte(stripjsoncomments.Strip(string(bedrockManifestOrig))), &bedrockManifest)
+	bedrockManifest, err := resource.UnmarshalJSON(bedrockManifestOrig)
 	if err != nil {
 		return err
 	}

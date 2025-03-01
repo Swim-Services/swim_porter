@@ -65,7 +65,7 @@ func (p *porter) crosshair() error {
 	if data, err := p.out.Read("textures/gui/icons.png"); err == nil {
 		img, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return porterror.Wrap(err)
+			return porterror.Wrap(err).WithMessage("read image textures/gui/icons.png")
 		}
 		iconsImg := img.(interface {
 			SubImage(r image.Rectangle) image.Image
@@ -86,7 +86,7 @@ func (p *porter) mobileButtons() error {
 	if data, err := p.out.Read("textures/gui/gui.png"); err == nil {
 		gui, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return porterror.Wrap(err)
+			return porterror.Wrap(err).WithMessage("read image textures/gui/gui.png")
 		}
 		mobileImgData, err := assetsMapFS.Read("mobile/mobile_buttons.png")
 		if err != nil {
@@ -145,7 +145,7 @@ func (p *porter) containerUI() error {
 
 		img, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return porterror.Wrap(err)
+			return porterror.Wrap(err).WithMessage("read image %s", filePath)
 		}
 		width := img.Bounds().Dx()
 		height := img.Bounds().Dy()

@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -19,7 +20,7 @@ func PackMcmeta(mcmeta []byte) (PackMeta, error) {
 	meta := PackMeta{}
 	err := json.Unmarshal(mcmeta, &meta)
 	if err != nil {
-		return PackMeta{}, err
+		return PackMeta{}, fmt.Errorf("read mcmeta: %w", err)
 	}
 	return meta, nil
 }

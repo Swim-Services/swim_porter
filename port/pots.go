@@ -45,11 +45,11 @@ func (p *porter) tintPots(splash bool) error {
 	}
 	blank, err := png.Decode(bytes.NewReader(data))
 	if err != nil {
-		return porterror.Wrap(err)
+		return porterror.Wrap(err).WithMessage("read potion bottle")
 	}
 	overlay, err := png.Decode(bytes.NewReader(overlayBytes))
 	if err != nil {
-		return porterror.Wrap(err)
+		return porterror.Wrap(err).WithMessage("read image textures/items/potion_overlay.png")
 	}
 	if overlay.Bounds() != blank.Bounds() {
 		overlay = imaging.Resize(overlay, blank.Bounds().Dx(), blank.Bounds().Dy(), imaging.NearestNeighbor)
@@ -77,7 +77,7 @@ func (p *porter) potionEffectsUI() error {
 	if inv, err := p.out.Read("textures/gui/container/inventory.png"); err == nil {
 		invImg, err := png.Decode(bytes.NewReader(inv))
 		if err != nil {
-			return porterror.Wrap(err)
+			return porterror.Wrap(err).WithMessage("read image textures/gui/container/inventory.png")
 		}
 		bounds := invImg.Bounds()
 		sin := float64(bounds.Dx()) / 4.41379310345

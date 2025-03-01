@@ -1,6 +1,9 @@
 package porterror
 
-import "runtime/debug"
+import (
+	"fmt"
+	"runtime/debug"
+)
 
 type PortError struct {
 	Err   string
@@ -21,4 +24,8 @@ func (e *PortError) Error() string {
 
 func (e *PortError) StackTrace() string {
 	return e.Trace
+}
+
+func (e PortError) WithMessage(format string, a ...any) *PortError {
+	return &PortError{Err: fmt.Sprintf(format, a...) + ": " + e.Err, Trace: e.Trace}
 }

@@ -2,10 +2,11 @@ package animatedinv
 
 import (
 	"image"
-	"image/draw"
+	"image/color"
 	"image/gif"
 
 	"github.com/disintegration/imaging"
+	"github.com/swim-services/swim_porter/internal"
 )
 
 func cloneMap(in map[string][]byte) map[string][]byte {
@@ -18,16 +19,15 @@ func cloneMap(in map[string][]byte) map[string][]byte {
 	return newMap
 }
 
-func SplitAnimatedGIF(gif *gif.GIF) []*image.NRGBA {
-	var out = make([]*image.NRGBA, len(gif.Image))
+func SplitAnimatedGIF(gifImg *gif.GIF) []*image.NRGBA {
+	var out = make([]*image.NRGBA, len(gifImg.Image))
 
-	imgWidth, imgHeight := getGifDimensions(gif)
+	imgWidth, imgHeight := getGifDimensions(gifImg)
 
-	overpaintImage := image.NewRGBA(image.Rect(0, 0, imgWidth, imgHeight))
-	draw.Draw(overpaintImage, overpaintImage.Bounds(), imaging.Clone(gif.Image[0]), image.Point{}, draw.Src)
+	overpaintImage := image.NewNRGBA(image.Rect(0, 0, imgWidth, imgHeight))
 
-	for i, srcImg := range gif.Image {
-		draw.Draw(overpaintImage, overpaintImage.Bounds(), srcImg, image.Point{}, draw.Over)
+	for i, srcImg := range gifImg.Image {
+		drawOverAsync(overpaintImage, srcImg)
 		out[i] = imaging.Clone(overpaintImage)
 	}
 	return out
@@ -55,4 +55,23 @@ func getGifDimensions(gif *gif.GIF) (x, y int) {
 	}
 
 	return highestX - lowestX, highestY - lowestY
+}
+
+func drawOverAsync(dst *image.NRGBA, src *image.Paletted) {
+	internal.Parallel(src.Bounds().Min.X, src.Bounds().Max.X, func(c <-chan int) {
+		for x := range c {
+			for y := src.Bounds().Min.Y; y < src.Bounds().Max.Y; y++ {
+				col := src.RGBA64At(x, y)
+				dst.SetRGBA64(x, y, blendColors(dst.RGBA64At(x, y), col, float64(col.A)/65535))
+			}
+		}
+	})
+}
+
+func blendColors(c1, c2 color.RGBA64, alpha float64) color.RGBA64 {
+	r := uint16(float64(c1.R)*(1-alpha) + float64(c2.R)*alpha)
+	g := uint16(float64(c1.G)*(1-alpha) + float64(c2.G)*alpha)
+	b := uint16(float64(c1.B)*(1-alpha) + float64(c2.B)*alpha)
+
+	return color.RGBA64{R: r, G: g, B: b, A: 65535}
 }

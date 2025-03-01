@@ -2,14 +2,12 @@ package rescale
 
 import (
 	"encoding/json"
-	"errors"
 	"reflect"
 
 	"github.com/disintegration/imaging"
 	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/resource"
 	"github.com/swim-services/swim_porter/utils"
-	stripjsoncomments "github.com/trapcodeio/go-strip-json-comments"
 )
 
 type RescaleOptions struct {
@@ -70,10 +68,9 @@ func (p *rescaler) doRescale(opts RescaleOptions) error {
 func (p *rescaler) manifest(showCredits bool) error {
 	bedrockManifestOrig, err := p.in.Read("manifest.json")
 	if err != nil {
-		return errors.New("manifest.json not found")
+		return porterror.Wrap(porterror.ErrManifestNotFound)
 	}
-	var bedrockManifest resource.Manifest
-	err = json.Unmarshal([]byte(stripjsoncomments.Strip(string(bedrockManifestOrig))), &bedrockManifest)
+	bedrockManifest, err := resource.UnmarshalJSON(bedrockManifestOrig)
 	if err != nil {
 		return porterror.Wrap(err)
 	}

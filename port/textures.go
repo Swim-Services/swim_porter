@@ -83,7 +83,7 @@ func (p *porter) water(flow bool) error {
 	if data, err := p.out.Read("textures/blocks/water" + waterType + ".png"); err == nil {
 		waterImg, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
-			return porterror.Wrap(err)
+			return porterror.Wrap(err).WithMessage("read image textures/blocks/water%s.png", waterType)
 		}
 		greyWater := internal.AlphaMult(imaging.Grayscale(waterImg), 2)
 		if err := internal.WritePng(greyWater, "textures/blocks/water"+waterType+"_grey.png", p.out); err != nil {
