@@ -26,6 +26,10 @@ func (e *PortError) StackTrace() string {
 	return e.Trace
 }
 
+func (e *PortError) Is(target error) bool {
+	return target.Error() == e.Err
+}
+
 func (e PortError) WithMessage(format string, a ...any) *PortError {
 	return &PortError{Err: fmt.Sprintf(format, a...) + ": " + e.Err, Trace: e.Trace}
 }
