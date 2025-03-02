@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"image/gif"
+	"iter"
 
 	"github.com/disintegration/imaging"
 	"github.com/swim-services/swim_porter/internal"
@@ -33,6 +34,19 @@ func SplitAnimatedGIF(gifImg *gif.GIF) []*image.NRGBA {
 	return out
 }
 
+func AnimatedGIFIter(gifImg *gif.GIF) iter.Seq[*image.NRGBA] {
+	imgWidth, imgHeight := getGifDimensions(gifImg)
+	overpaintImage := image.NewNRGBA(image.Rect(0, 0, imgWidth, imgHeight))
+
+	return func(yield func(*image.NRGBA) bool) {
+		for _, srcImg := range gifImg.Image {
+			drawOverAsync(overpaintImage, srcImg)
+			if !yield(overpaintImage) {
+				return
+			}
+		}
+	}
+}
 func getGifDimensions(gif *gif.GIF) (x, y int) {
 	var lowestX int
 	var lowestY int

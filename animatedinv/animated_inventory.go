@@ -48,7 +48,6 @@ type invmaker struct {
 	static    image.Image
 	out       *utils.MapFS
 	lastFrame *image.NRGBA
-	splitGif  []*image.NRGBA
 	name      string
 	overlay   bool
 	addSlots  bool
@@ -56,7 +55,6 @@ type invmaker struct {
 
 func MakeAnimated(in *gif.GIF, name string, addSlots bool) ([]byte, error) {
 	maker := &invmaker{in: in, out: utils.NewMapFS(cloneMap(assets)), name: name, addSlots: addSlots}
-	maker.splitGif = SplitAnimatedGIF(maker.in)
 	if err := maker.manifest(); err != nil {
 		return []byte{}, err
 	}
@@ -99,11 +97,13 @@ func MakeOverlay(in image.Image, name string, addSlots bool) ([]byte, error) {
 
 func (p *invmaker) makeGifInventory() error {
 	out := image.NewNRGBA(image.Rect(0, 0, max(out_x, out_x*int(math.Ceil(float64(len(p.in.Image))/40))), out_y*min(40, len(p.in.Image))))
-	for i, frame := range p.splitGif {
+	i := 0
+	for frame := range AnimatedGIFIter(p.in) {
 		nrgbaImg := (frame)
 		startx := (i / 40) * out_x
 		starty := (i % 40) * out_y
 		draw.Draw(out, image.Rect(startx, starty, startx+out_x, starty+out_y), imaging.Resize(nrgbaImg, out_x, out_y, imaging.Box), image.Point{}, draw.Over)
+		i++
 	}
 	var overlay image.Image
 	if p.addSlots {
