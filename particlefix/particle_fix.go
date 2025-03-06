@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"image"
 	"image/draw"
-	"image/png"
 
 	"github.com/disintegration/imaging"
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/resource"
@@ -25,7 +25,7 @@ var vanillaParticles image.Image
 
 func init() {
 	var err error
-	vanillaParticles, err = png.Decode(bytes.NewBuffer(vanillaParticleData))
+	vanillaParticles, err = fastpng.Decode(bytes.NewBuffer(vanillaParticleData))
 	if err != nil {
 		panic(err)
 	}
@@ -57,7 +57,7 @@ func DoFix(in *utils.MapFS) error {
 	if err != nil {
 		return err
 	}
-	particleImg, err := png.Decode(bytes.NewBuffer(particleData))
+	particleImg, err := fastpng.Decode(bytes.NewBuffer(particleData))
 	if err != nil {
 		return porterror.Wrap(err).WithMessage("read image textures/particle/particles.png")
 	}

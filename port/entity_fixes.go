@@ -6,9 +6,9 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	"image/png"
 
 	"github.com/disintegration/imaging"
+	"github.com/gameparrot/fastpng"
 	"github.com/gameparrot/tga"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
@@ -30,7 +30,7 @@ func (p *porter) entityFixes() error {
 
 func (p *porter) fixZombie() error {
 	if data, err := p.out.Read("textures/entity/zombie/zombie.png"); err == nil {
-		zombieImg, err := png.Decode(bytes.NewReader(data))
+		zombieImg, err := fastpng.Decode(bytes.NewReader(data))
 		if err != nil {
 			return porterror.Wrap(err).WithMessage("read image textures/entity/zombie/zombie.png")
 		}
@@ -46,11 +46,11 @@ func (p *porter) fixZombie() error {
 func (p *porter) fixSheep() error {
 	if data, err := p.out.Read("textures/entity/sheep/sheep.png"); err == nil {
 		if datafur, err := p.out.Read("textures/entity/sheep/sheep_fur.png"); err == nil {
-			sheepImg, err := png.Decode(bytes.NewReader(data))
+			sheepImg, err := fastpng.Decode(bytes.NewReader(data))
 			if err != nil {
 				return porterror.Wrap(err).WithMessage("read image textures/entity/sheep/sheep.png")
 			}
-			sheepFurImg, err := png.Decode(bytes.NewReader(datafur))
+			sheepFurImg, err := fastpng.Decode(bytes.NewReader(datafur))
 			if err != nil {
 				return porterror.Wrap(err).WithMessage("read image textures/entity/sheep/sheep_fur.png")
 			}
@@ -90,7 +90,7 @@ func (p *porter) fixLeather() error {
 		imgPath := fmt.Sprintf("textures/models/armor/cloth_%d.png", i)
 		overlayPath := fmt.Sprintf("textures/models/armor/leather_layer_%d_overlay.png", i)
 		if data, err := p.out.Read(imgPath); err == nil {
-			img, err := png.Decode(bytes.NewReader(data))
+			img, err := fastpng.Decode(bytes.NewReader(data))
 			if err != nil {
 				return porterror.Wrap(err).WithMessage("read image textures/models/armor/cloth_%d.png", i)
 			}
@@ -100,7 +100,7 @@ func (p *porter) fixLeather() error {
 			}
 
 			if overlayData, err := p.out.Read(overlayPath); err == nil {
-				overlay, err := png.Decode(bytes.NewReader(overlayData))
+				overlay, err := fastpng.Decode(bytes.NewReader(overlayData))
 				if err != nil {
 					return porterror.Wrap(err).WithMessage("read image textures/models/armor/leather_layer_%d_overlay.png", i)
 				}

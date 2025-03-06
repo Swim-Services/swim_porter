@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
-	"image/png"
 	"path"
 	"slices"
 	"strings"
 
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/utils"
@@ -48,7 +48,7 @@ func (p *porter) gui() {
 
 func (p *porter) guiFix() error {
 	if gui, err := p.out.Read("textures/gui/gui.png"); err == nil {
-		guiImg, err := png.Decode(bytes.NewReader(gui))
+		guiImg, err := fastpng.Decode(bytes.NewReader(gui))
 		if err != nil {
 			return porterror.Wrap(err)
 		}
@@ -63,7 +63,7 @@ func (p *porter) guiFix() error {
 
 func (p *porter) crosshair() error {
 	if data, err := p.out.Read("textures/gui/icons.png"); err == nil {
-		img, err := png.Decode(bytes.NewReader(data))
+		img, err := fastpng.Decode(bytes.NewReader(data))
 		if err != nil {
 			return porterror.Wrap(err).WithMessage("read image textures/gui/icons.png")
 		}
@@ -84,7 +84,7 @@ func (p *porter) crosshair() error {
 
 func (p *porter) mobileButtons() error {
 	if data, err := p.out.Read("textures/gui/gui.png"); err == nil {
-		gui, err := png.Decode(bytes.NewReader(data))
+		gui, err := fastpng.Decode(bytes.NewReader(data))
 		if err != nil {
 			return porterror.Wrap(err).WithMessage("read image textures/gui/gui.png")
 		}
@@ -92,7 +92,7 @@ func (p *porter) mobileButtons() error {
 		if err != nil {
 			return porterror.Wrap(err)
 		}
-		mobileImg, err := png.Decode(bytes.NewReader(mobileImgData))
+		mobileImg, err := fastpng.Decode(bytes.NewReader(mobileImgData))
 		if err != nil {
 			return porterror.Wrap(err)
 		}
@@ -143,7 +143,7 @@ func (p *porter) containerUI() error {
 		fileExtension := path.Ext(filePath)
 		fileName := filePath[:strings.LastIndex(filePath, fileExtension)]
 
-		img, err := png.Decode(bytes.NewReader(data))
+		img, err := fastpng.Decode(bytes.NewReader(data))
 		if err != nil {
 			return porterror.Wrap(err).WithMessage("read image %s", filePath)
 		}

@@ -6,20 +6,20 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	"image/png"
 
 	"github.com/swim-services/swim_porter/utils"
 
 	"github.com/disintegration/imaging"
+	"github.com/gameparrot/fastpng"
 	"github.com/gameparrot/tga"
 )
 
 func SideOverlayTGA(overlay, base []byte) ([]byte, error) {
-	overlayImg, err := png.Decode(bytes.NewReader(overlay))
+	overlayImg, err := fastpng.Decode(bytes.NewReader(overlay))
 	if err != nil {
 		return []byte{}, err
 	}
-	baseImg, err := png.Decode(bytes.NewReader(base))
+	baseImg, err := fastpng.Decode(bytes.NewReader(base))
 	if err != nil {
 		return []byte{}, err
 	}
@@ -42,7 +42,7 @@ func SideOverlayTGA(overlay, base []byte) ([]byte, error) {
 
 func WritePng(img image.Image, path string, fs *utils.MapFS) error {
 	writer := bytes.NewBuffer([]byte{})
-	if err := png.Encode(writer, img); err != nil {
+	if err := fastpng.Encode(writer, img); err != nil {
 		return fmt.Errorf("write image %s: %w", path, err)
 	}
 	fs.Write(writer.Bytes(), path)

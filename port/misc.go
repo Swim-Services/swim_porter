@@ -5,8 +5,8 @@ import (
 	_ "embed"
 	"image"
 	"image/draw"
-	"image/png"
 
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/utils"
@@ -52,7 +52,7 @@ func (p *porter) armor() {
 
 func (p *porter) title() error {
 	if data, err := p.out.Read("textures/gui/title/minecraft.png"); err == nil {
-		titleImg, err := png.Decode(bytes.NewReader(data))
+		titleImg, err := fastpng.Decode(bytes.NewReader(data))
 		if err != nil {
 			return porterror.Wrap(err).WithMessage("read image textures/gui/title/minecraft.png")
 		}

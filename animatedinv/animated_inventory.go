@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
-	"image/png"
 	"math"
 	"strconv"
 
 	"image/gif"
 
 	"github.com/disintegration/imaging"
+	"github.com/gameparrot/fastpng"
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/resource"
 	"github.com/swim-services/swim_porter/utils"
@@ -36,7 +36,7 @@ func init() {
 		panic(err)
 	}
 	assets = zipMap
-	slotsImg, err := png.Decode(bytes.NewReader(slotsPng))
+	slotsImg, err := fastpng.Decode(bytes.NewReader(slotsPng))
 	if err != nil {
 		panic(err)
 	}
@@ -112,12 +112,12 @@ func (p *invmaker) makeGifInventory() error {
 		overlay = image.NewNRGBA(image.Rect(0, 0, out_x, out_y))
 	}
 	blankWriter := bytes.NewBuffer([]byte{})
-	if err := png.Encode(blankWriter, overlay); err != nil {
+	if err := fastpng.Encode(blankWriter, overlay); err != nil {
 		return err
 	}
 	p.out.Write(blankWriter.Bytes(), "textures/animated_ui/inventory_bg/inventory_overlay.png")
 	writer := bytes.NewBuffer([]byte{})
-	if err := png.Encode(writer, out); err != nil {
+	if err := fastpng.Encode(writer, out); err != nil {
 		return err
 	}
 	p.out.Write(writer.Bytes(), "textures/animated_ui/inventory_bg/inventory_vertical_flipbook.png")
@@ -130,7 +130,7 @@ func (p *invmaker) makeOverlay() error {
 		draw.Draw(out, out.Bounds(), slots, image.Point{}, draw.Over)
 	}
 	writer := bytes.NewBuffer([]byte{})
-	if err := png.Encode(writer, out); err != nil {
+	if err := fastpng.Encode(writer, out); err != nil {
 		return err
 	}
 	p.out.Write(writer.Bytes(), "textures/animated_ui/inventory_bg/inventory_overlay.png")
@@ -173,7 +173,7 @@ func (p *invmaker) icon() error {
 		img = p.in.Image[0]
 	}
 	writer := bytes.NewBuffer([]byte{})
-	if err := png.Encode(writer, img); err != nil {
+	if err := fastpng.Encode(writer, img); err != nil {
 		return err
 	}
 	p.out.Write(writer.Bytes(), "pack_icon.png")

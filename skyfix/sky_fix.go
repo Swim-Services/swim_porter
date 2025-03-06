@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"image"
-	"image/png"
 
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/cubemap"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
@@ -58,7 +58,7 @@ func (p *skyfixer) doSkyFix() error {
 		if err != nil {
 			return porterror.New("pack does not contain sky")
 		}
-		pngImg, err := png.Decode(bytes.NewReader(file))
+		pngImg, err := fastpng.Decode(bytes.NewReader(file))
 		if err != nil {
 			return porterror.Wrap(err).WithMessage("read cubemap_%d.png")
 		}

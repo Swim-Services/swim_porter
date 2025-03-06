@@ -2,6 +2,7 @@ package port
 
 import (
 	"encoding/json"
+	"sync"
 
 	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/utils"
@@ -52,6 +53,19 @@ func (p *porter) doPort(opts PortOptions) error {
 	if err := p.manifest(opts.ShowCredits); err != nil {
 		return err
 	}
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	var skyErr error
+	go func() {
+		defer wg.Done()
+		if err := p.environment(opts.SkyboxOverride); err != nil {
+			if portError, ok := err.(*porterror.PortError); ok {
+				skyErr = portError.WithMessage("port environment")
+				return
+			}
+			skyErr = err
+		}
+	}()
 	p.icon()
 	if err := p.textures(); err != nil {
 		if portError, ok := err.(*porterror.PortError); ok {
@@ -77,12 +91,6 @@ func (p *porter) doPort(opts PortOptions) error {
 		}
 		return err
 	}
-	if err := p.environment(opts.SkyboxOverride); err != nil {
-		if portError, ok := err.(*porterror.PortError); ok {
-			return portError.WithMessage("port environment")
-		}
-		return err
-	}
 	if err := p.misc(); err != nil {
 		if portError, ok := err.(*porterror.PortError); ok {
 			return portError.WithMessage("port misc")
@@ -102,7 +110,8 @@ func (p *porter) doPort(opts PortOptions) error {
 		}
 		return err
 	}
-	return nil
+	wg.Wait()
+	return skyErr
 }
 
 func (p *porter) manifest(showCredits bool) error {

@@ -6,12 +6,13 @@ import (
 	"errors"
 	"image"
 	"image/color"
-	"image/png"
+	"maps"
 	"path"
 	"path/filepath"
 	"slices"
 	"strings"
 
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/resource"
@@ -34,7 +35,7 @@ func Recolor(in []byte, opts RecolorOptions) ([]byte, error) {
 		return []byte{}, err
 	}
 	fs := utils.NewMapFS(zipMap)
-	err = RecolorRaw(utils.NewMapFS(zipMap), opts)
+	err = RecolorRaw(fs, opts)
 	if err != nil {
 		return []byte{}, err
 	}
@@ -48,6 +49,8 @@ func Recolor(in []byte, opts RecolorOptions) ([]byte, error) {
 func RecolorRaw(in *utils.MapFS, opts RecolorOptions) error {
 	if opts.Alg == "" {
 		opts.Alg = "hue"
+	} else if !slices.Contains([]string{"hue", "gray_tint", "tint"}, opts.Alg) {
+		return errors.New("invalid algorithm")
 	}
 	p := &recolorer{in: in}
 	err := p.doRecolor(opts)
@@ -61,19 +64,19 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 	if err := p.manifest(opts.ShowCredits); err != nil {
 		return porterror.Wrap(err)
 	}
-	for file, data := range p.in.RawMap() {
+	internal.ParallelMap(maps.Clone(p.in.RawMap()), func(file string, data []byte) {
 		name := filepath.Base(file)
 		ext := path.Ext(name)
 		if ext != ".png" {
-			continue
+			return
 		}
 		nameNoExt := name[:strings.LastIndex(name, ext)]
 		if !slices.Contains(utils.DEFAULT_RECOLOR_LIST, nameNoExt) {
-			continue
+			return
 		}
-		img, err := png.Decode(bytes.NewReader(data))
+		img, err := fastpng.Decode(bytes.NewReader(data))
 		if err != nil {
-			continue // ignore invalid images
+			return // ignore invalid images
 		}
 		var newImg image.Image
 		err = nil
@@ -85,15 +88,15 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 		case "gray_tint":
 			newImg = GrayTint(img, opts.NewColor)
 		default:
-			return errors.New("unknown algorithm")
+			return
 		}
 		if err != nil {
-			return porterror.Wrap(err)
+			return
 		}
 		if err := internal.WritePng(newImg, file, p.in); err != nil {
-			return porterror.Wrap(err)
+			return
 		}
-	}
+	})
 	return nil
 }
 

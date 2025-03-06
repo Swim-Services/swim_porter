@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"image"
-	"image/png"
 
+	"github.com/gameparrot/fastpng"
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/resource"
 	"github.com/swim-services/swim_porter/utils"
@@ -16,7 +16,7 @@ func SkyPack(name string, img [6]image.Image, action string) ([]byte, error) {
 	fs := utils.NewMapFS(make(map[string][]byte))
 	for i, image := range img {
 		writer := bytes.NewBuffer([]byte{})
-		err := png.Encode(writer, image)
+		err := fastpng.Encode(writer, image)
 		if err != nil {
 			return []byte{}, err
 		}

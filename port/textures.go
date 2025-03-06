@@ -3,10 +3,10 @@ package port
 import (
 	"bytes"
 	"image"
-	"image/png"
 	"strings"
 
 	"github.com/disintegration/imaging"
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/particlefix"
 	"github.com/swim-services/swim_porter/porterror"
@@ -61,7 +61,7 @@ func (p *porter) grassSide() error {
 func (p *porter) itemsFix() {
 	internal.ParallelMap(p.out.Dir("textures/items"), func(path string, data []byte) {
 		if strings.HasSuffix(strings.ToLower(path), ".png") {
-			if img, err := png.Decode(bytes.NewReader(data)); err == nil {
+			if img, err := fastpng.Decode(bytes.NewReader(data)); err == nil {
 				internal.WritePng(imageTransparencyFix(img, 127), "textures/items"+path, p.out)
 			}
 		}
@@ -81,7 +81,7 @@ func (p *porter) water(flow bool) error {
 		waterType = "_still"
 	}
 	if data, err := p.out.Read("textures/blocks/water" + waterType + ".png"); err == nil {
-		waterImg, err := png.Decode(bytes.NewReader(data))
+		waterImg, err := fastpng.Decode(bytes.NewReader(data))
 		if err != nil {
 			return porterror.Wrap(err).WithMessage("read image textures/blocks/water%s.png", waterType)
 		}

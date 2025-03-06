@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"image"
-	"image/png"
 	"math"
 
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/utils"
@@ -24,7 +24,7 @@ func (p *porter) xp() error {
 
 func (p *porter) xpBar() error {
 	if iconsFile, err := p.out.Read("textures/gui/icons.png"); err == nil {
-		icons, err := png.Decode(bytes.NewReader(iconsFile))
+		icons, err := fastpng.Decode(bytes.NewReader(iconsFile))
 		if err != nil {
 			return porterror.Wrap(err).WithMessage("read image textures/gui/icons.png")
 		}

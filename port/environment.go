@@ -5,8 +5,8 @@ import (
 	"context"
 	"fmt"
 	"image"
-	"image/png"
 
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/cubemap"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
@@ -39,13 +39,13 @@ func (p *porter) sky(skyboxOverride string) error {
 	var skyMap image.Image
 	found := false
 	if data, err := p.in.Read("assets/minecraft/mcpatcher/sky/world0/" + skyboxOverride + ".png"); err == nil && skyboxOverride != "" {
-		if skyMap, err = png.Decode(bytes.NewReader(data)); err == nil {
+		if skyMap, err = fastpng.Decode(bytes.NewReader(data)); err == nil {
 			found = true
 		}
 	} else {
 		for _, box := range skyboxes {
 			if data, err := p.in.Read("assets/minecraft/mcpatcher/sky/world0/" + box + ".png"); err == nil {
-				if skyMap, err = png.Decode(bytes.NewReader(data)); err == nil {
+				if skyMap, err = fastpng.Decode(bytes.NewReader(data)); err == nil {
 					found = true
 					break
 				}

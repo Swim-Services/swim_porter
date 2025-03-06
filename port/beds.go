@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"image"
 	"image/draw"
-	"image/png"
 	"math"
 
 	"github.com/disintegration/imaging"
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/recolor"
@@ -61,7 +61,7 @@ func (p *porter) beds() error {
 	draw.Draw(newImg, headEnd.Bounds().Add(image.Point{X: baseDraw, Y: -feetHeight}), imaging.Rotate180(headEnd), image.Point{}, draw.Over)
 
 	if woodPlanksData, err := p.out.Read("textures/blocks/planks_oak.png"); err == nil {
-		planksImg, err := png.Decode(bytes.NewReader(woodPlanksData))
+		planksImg, err := fastpng.Decode(bytes.NewReader(woodPlanksData))
 		if err != nil {
 			return porterror.Wrap(err)
 		}
@@ -139,7 +139,7 @@ func (p *porter) tryLoadBed(name string) (image.Image, error) {
 	if err != nil {
 		return nil, err
 	}
-	img, err := png.Decode(bytes.NewReader(data))
+	img, err := fastpng.Decode(bytes.NewReader(data))
 	if err != nil {
 		return nil, err
 	}

@@ -2,12 +2,14 @@ github.com/crazy3lf/colorconv v1.2.0 h1:UM7kSZWnwFMGiC+PpYrjxQSOd6sEyWb+dRKKTd3K
 github.com/crazy3lf/colorconv v1.2.0/go.mod h1:2jTJ7QCWCj2sSLOhF4Gzi0J5/hoX8/VY8VzNvXAlD1I=
 github.com/disintegration/imaging v1.6.2 h1:w1LecBlG2Lnp8B3jk5zSuNqd7b4DXhcjwek1ei82L+c=
 github.com/disintegration/imaging v1.6.2/go.mod h1:44/5580QXChDfwIclfc/PCwrr44amcmDAg8hxG0Ewe4=
+github.com/gameparrot/fastpng v0.0.0-20250305185850-d72e123a2123 h1:sThO6jXyngtFu/mCwB4a19gkyGtQ9Ae0GALfOsoR1hY=
+github.com/gameparrot/fastpng v0.0.0-20250305185850-d72e123a2123/go.mod h1:4dreA1wSeh5wAyHlrnWvFL4Qd56NNP9MVhC2G8lxexc=
 github.com/gameparrot/tga v1.0.0 h1:kkwTSsvpAma9cKQy4OCJnTaDALEnbqC3bUz5JaeN5Zs=
 github.com/gameparrot/tga v1.0.0/go.mod h1:1msFuGeznAK13eWjqC1OGshOy8B7jpPhpnxs6wMUTQY=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/klauspost/compress v1.17.11 h1:In6xLpyWOi1+C7tXUUWv2ot1QvBjxevKAaI6IXrJmUc=
-github.com/klauspost/compress v1.17.11/go.mod h1:pMDklpSncoRMuLFrf1W9Ss9KT+0rH90U12bZKk7uwG0=
+github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zttxdo=
+github.com/klauspost/compress v1.18.0/go.mod h1:2Pp+KzxcywXVXMr50+X0Q/Lsb43OQHYWRCY2AiWywWQ=
 github.com/muhammadmuzzammil1998/jsonc v1.0.0 h1:8o5gBQn4ZA3NBA9DlTujCj2a4w0tqWrPVjDwhzkgTIs=
 github.com/muhammadmuzzammil1998/jsonc v1.0.0/go.mod h1:saF2fIVw4banK0H4+/EuqfFLpRnoy5S+ECwTOCcRcSU=
 github.com/sandertv/gophertunnel v1.43.1 h1:wY6Fy8dRMKtpZUQzCR35o9k05135vOJZhrz0GF6OXFI=

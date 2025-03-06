@@ -26,7 +26,7 @@ func Rescale(in []byte, scale int, opts RescaleOptions) ([]byte, error) {
 		return []byte{}, err
 	}
 	fs := utils.NewMapFS(zipMap)
-	err = RescaleRaw(utils.NewMapFS(zipMap), scale, opts)
+	err = RescaleRaw(fs, scale, opts)
 	if err != nil {
 		return []byte{}, err
 	}

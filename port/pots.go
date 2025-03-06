@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"image"
 	"image/draw"
-	"image/png"
 	"math"
 
+	"github.com/gameparrot/fastpng"
 	"github.com/swim-services/swim_porter/internal"
 	"github.com/swim-services/swim_porter/porterror"
 	"github.com/swim-services/swim_porter/recolor"
@@ -43,11 +43,11 @@ func (p *porter) tintPots(splash bool) error {
 	if err != nil {
 		return nil
 	}
-	blank, err := png.Decode(bytes.NewReader(data))
+	blank, err := fastpng.Decode(bytes.NewReader(data))
 	if err != nil {
 		return porterror.Wrap(err).WithMessage("read potion bottle")
 	}
-	overlay, err := png.Decode(bytes.NewReader(overlayBytes))
+	overlay, err := fastpng.Decode(bytes.NewReader(overlayBytes))
 	if err != nil {
 		return porterror.Wrap(err).WithMessage("read image textures/items/potion_overlay.png")
 	}
@@ -60,7 +60,7 @@ func (p *porter) tintPots(splash bool) error {
 		draw.Draw(canvas, blank.Bounds(), blank, image.Point{0, 0}, draw.Src)
 		draw.Draw(canvas, blank.Bounds(), over, image.Point{0, 0}, draw.Over)
 		writer := bytes.NewBuffer([]byte{})
-		if err := png.Encode(writer, canvas); err != nil {
+		if err := fastpng.Encode(writer, canvas); err != nil {
 			return porterror.Wrap(err)
 		}
 		imgBytes := writer.Bytes()
@@ -75,7 +75,7 @@ func (p *porter) tintPots(splash bool) error {
 
 func (p *porter) potionEffectsUI() error {
 	if inv, err := p.out.Read("textures/gui/container/inventory.png"); err == nil {
-		invImg, err := png.Decode(bytes.NewReader(inv))
+		invImg, err := fastpng.Decode(bytes.NewReader(inv))
 		if err != nil {
 			return porterror.Wrap(err).WithMessage("read image textures/gui/container/inventory.png")
 		}
