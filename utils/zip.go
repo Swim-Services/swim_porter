@@ -7,14 +7,24 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/klauspost/compress/flate"
 	"github.com/klauspost/compress/zip"
 )
 
 var blacklist = []string{".DS_Store", "desktop.ini", "Thumbs.db"}
 
 func Zip(in map[string][]byte) ([]byte, error) {
+	return ZipCompressionLevel(in, -3)
+}
+
+func ZipCompressionLevel(in map[string][]byte, compressionLevel int) ([]byte, error) {
 	writer := bytes.NewBuffer([]byte{})
 	w := zip.NewWriter(writer)
+	if compressionLevel >= -2 {
+		w.RegisterCompressor(zip.Deflate, func(out io.Writer) (io.WriteCloser, error) {
+			return flate.NewWriter(out, compressionLevel)
+		})
+	}
 	for file, data := range in {
 		f, err := w.Create(strings.TrimPrefix(file, "/"))
 		if err != nil {
