@@ -104,6 +104,27 @@ func HueShift(in image.Image, iHUE float64) (image.Image, error) {
 	return out, nil
 }
 
+func HueShiftV2(in image.Image, newColor color.RGBA) (image.Image, error) {
+	newH, newS, newV := colorconv.RGBToHSV(newColor.R, newColor.G, newColor.B)
+	bounds := in.Bounds()
+	out := image.NewRGBA(bounds)
+	for x := bounds.Min.X; x < bounds.Max.X; x++ {
+		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+			r, g, b, a := in.At(x, y).RGBA()
+			if a < 1024 {
+				continue
+			}
+			_, s, v := colorconv.RGBToHSV(uint8(r>>8), uint8(g>>8), uint8(b>>8))
+			outR, outG, outB, err := colorconv.HSVToRGB(newH, min(1, s*newS*1.2), min(1, v*newV*1.2))
+			if err != nil {
+				return nil, err
+			}
+			out.Set(x, y, color.RGBA{outR, outG, outB, uint8(a >> 8)})
+		}
+	}
+	return out, nil
+}
+
 func GetHue(red, green, blue int) int {
 	min := math.Min(math.Min(float64(red), float64(green)), float64(blue))
 	max := math.Max(math.Max(float64(red), float64(green)), float64(blue))

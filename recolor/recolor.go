@@ -48,8 +48,8 @@ func Recolor(in []byte, opts RecolorOptions) ([]byte, error) {
 
 func RecolorRaw(in *utils.MapFS, opts RecolorOptions) error {
 	if opts.Alg == "" {
-		opts.Alg = "hue"
-	} else if !slices.Contains([]string{"hue", "gray_tint", "tint"}, opts.Alg) {
+		opts.Alg = "hue_v2"
+	} else if !slices.Contains([]string{"hue", "hue_v2", "gray_tint", "tint"}, opts.Alg) {
 		return errors.New("invalid algorithm")
 	}
 	p := &recolorer{in: in}
@@ -87,6 +87,8 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 			newImg, err = HueShift(img, float64(GetHue(int(opts.NewColor.R), int(opts.NewColor.G), int(opts.NewColor.B))))
 		case "gray_tint":
 			newImg = GrayTint(img, opts.NewColor)
+		case "hue_v2":
+			newImg, err = HueShiftV2(img, opts.NewColor)
 		default:
 			return
 		}
