@@ -2,6 +2,7 @@ package internal
 
 import (
 	"runtime"
+	"sync"
 	_ "unsafe"
 )
 
@@ -14,11 +15,14 @@ func ParallelMap[T comparable, V any](m map[T]V, f func(key T, val V)) {
 	channel := make(chan mapKeyAndValue[T, V])
 
 	procs := runtime.GOMAXPROCS(0)
+	wg := sync.WaitGroup{}
+	wg.Add(procs)
 	for i := 0; i < procs; i++ {
 		go func() {
 			for keyAndVal := range channel {
 				f(keyAndVal.key, keyAndVal.val)
 			}
+			wg.Done()
 		}()
 	}
 
