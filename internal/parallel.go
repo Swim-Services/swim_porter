@@ -30,6 +30,7 @@ func ParallelMap[T comparable, V any](m map[T]V, f func(key T, val V)) {
 		channel <- mapKeyAndValue[T, V]{key: key, val: val}
 	}
 	close(channel)
+	wg.Wait()
 }
 
 //go:linkname Parallel github.com/disintegration/imaging.parallel
