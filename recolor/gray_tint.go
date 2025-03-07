@@ -21,7 +21,7 @@ func (g *GrayTint) SetColor(color color.RGBA) {
 	g.color = color
 }
 
-func (t *GrayTint) RecolorImage(in image.Image) (image.Image, error) {
+func (t *GrayTint) RecolorImage(in image.Image, fileName string) (image.Image, error) {
 	in = imaging.Grayscale(in)
 	bounds := in.Bounds()
 	dst := image.NewRGBA(bounds)

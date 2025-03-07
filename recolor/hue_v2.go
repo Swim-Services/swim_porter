@@ -3,6 +3,7 @@ package recolor
 import (
 	"image"
 	"image/color"
+	"strings"
 
 	"github.com/crazy3lf/colorconv"
 	"github.com/swim-services/swim_porter/utils"
@@ -21,7 +22,7 @@ func (h *HueV2) SetColor(color color.RGBA) {
 	h.h, h.s, h.v = colorconv.RGBToHSV(color.R, color.G, color.B)
 }
 
-func (h *HueV2) RecolorImage(in image.Image) (image.Image, error) {
+func (h *HueV2) RecolorImage(in image.Image, fileName string) (image.Image, error) {
 	bounds := in.Bounds()
 	out := image.NewRGBA(bounds)
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
@@ -31,7 +32,7 @@ func (h *HueV2) RecolorImage(in image.Image) (image.Image, error) {
 				continue
 			}
 			_, s, v := colorconv.RGBToHSV(uint8(r>>8), uint8(g>>8), uint8(b>>8))
-			if s > 0.15 {
+			if s > 0.15 || strings.Contains(fileName, "overworld_cubemap") {
 				s = min(1, s*h.s*1.2)
 				v = min(1, v*h.v*1.2)
 			}

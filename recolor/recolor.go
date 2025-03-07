@@ -79,7 +79,7 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 		}
 		var newImg image.Image
 		err = nil
-		if newImg, err = opts.Alg.RecolorImage(img); err != nil {
+		if newImg, err = opts.Alg.RecolorImage(img, file); err != nil {
 			return
 		}
 		if err := internal.WritePng(newImg, file, p.in); err != nil {

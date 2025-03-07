@@ -7,7 +7,7 @@ import (
 
 type Algorithm interface {
 	SetColor(c color.RGBA)
-	RecolorImage(in image.Image) (image.Image, error)
+	RecolorImage(in image.Image, fileName string) (image.Image, error)
 	DefaultList() []string
 }
 

@@ -21,7 +21,7 @@ func (h *Hue) SetColor(color color.RGBA) {
 	h.hue = float64(GetHue(int(color.R), int(color.G), int(color.B)))
 }
 
-func (h *Hue) RecolorImage(in image.Image) (image.Image, error) {
+func (h *Hue) RecolorImage(in image.Image, fileName string) (image.Image, error) {
 	bounds := in.Bounds()
 	out := image.NewRGBA(bounds)
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {

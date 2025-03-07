@@ -19,7 +19,7 @@ func (t *Tint) SetColor(color color.RGBA) {
 	t.color = color
 }
 
-func (t *Tint) RecolorImage(in image.Image) (image.Image, error) {
+func (t *Tint) RecolorImage(in image.Image, fileName string) (image.Image, error) {
 	bounds := in.Bounds()
 	dst := image.NewRGBA(bounds)
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
