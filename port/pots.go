@@ -55,7 +55,7 @@ func (p *porter) tintPots(splash bool) error {
 		overlay = imaging.Resize(overlay, blank.Bounds().Dx(), blank.Bounds().Dy(), imaging.NearestNeighbor)
 	}
 	for potType, color := range utils.POTS_MAP {
-		over := recolor.Tint(overlay, color)
+		over, _ := recolor.NewTint(color).RecolorImage(overlay)
 		canvas := image.NewRGBA(blank.Bounds())
 		draw.Draw(canvas, blank.Bounds(), blank, image.Point{0, 0}, draw.Src)
 		draw.Draw(canvas, blank.Bounds(), over, image.Point{0, 0}, draw.Over)

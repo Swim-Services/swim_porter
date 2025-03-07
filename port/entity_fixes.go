@@ -94,7 +94,7 @@ func (p *porter) fixLeather() error {
 			if err != nil {
 				return porterror.Wrap(err).WithMessage("read image textures/models/armor/cloth_%d.png", i)
 			}
-			newImg := recolor.Tint(img, color.RGBA{R: 190, G: 120, B: 80})
+			newImg, _ := recolor.NewTint(color.RGBA{R: 190, G: 120, B: 80}).RecolorImage(img)
 			if err := internal.WritePng(newImg, imgPath, p.out); err != nil {
 				return porterror.Wrap(err)
 			}

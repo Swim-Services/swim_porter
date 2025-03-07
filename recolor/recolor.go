@@ -3,7 +3,6 @@ package recolor
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"image"
 	"image/color"
 	"maps"
@@ -22,7 +21,7 @@ import (
 type RecolorOptions struct {
 	ShowCredits bool
 	NewColor    color.RGBA
-	Alg         string
+	Alg         Algorithm
 }
 
 type recolorer struct {
@@ -47,10 +46,8 @@ func Recolor(in []byte, opts RecolorOptions) ([]byte, error) {
 }
 
 func RecolorRaw(in *utils.MapFS, opts RecolorOptions) error {
-	if opts.Alg == "" {
-		opts.Alg = "hue_v2"
-	} else if !slices.Contains([]string{"hue", "hue_v2", "gray_tint", "tint"}, opts.Alg) {
-		return errors.New("invalid algorithm")
+	if opts.Alg == nil {
+		opts.Alg = &HueV2{}
 	}
 	p := &recolorer{in: in}
 	err := p.doRecolor(opts)
@@ -64,6 +61,8 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 	if err := p.manifest(opts.ShowCredits); err != nil {
 		return porterror.Wrap(err)
 	}
+	opts.Alg.SetColor(opts.NewColor)
+	list := opts.Alg.DefaultList()
 	internal.ParallelMap(maps.Clone(p.in.RawMap()), func(file string, data []byte) {
 		name := filepath.Base(file)
 		ext := path.Ext(name)
@@ -71,7 +70,7 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 			return
 		}
 		nameNoExt := name[:strings.LastIndex(name, ext)]
-		if !slices.Contains(utils.DEFAULT_RECOLOR_LIST, nameNoExt) {
+		if !slices.Contains(list, nameNoExt) {
 			return
 		}
 		img, err := fastpng.Decode(bytes.NewReader(data))
@@ -80,19 +79,7 @@ func (p *recolorer) doRecolor(opts RecolorOptions) error {
 		}
 		var newImg image.Image
 		err = nil
-		switch opts.Alg {
-		case "tint":
-			newImg = Tint(img, opts.NewColor)
-		case "hue":
-			newImg, err = HueShift(img, float64(GetHue(int(opts.NewColor.R), int(opts.NewColor.G), int(opts.NewColor.B))))
-		case "gray_tint":
-			newImg = GrayTint(img, opts.NewColor)
-		case "hue_v2":
-			newImg, err = HueShiftV2(img, opts.NewColor)
-		default:
-			return
-		}
-		if err != nil {
+		if newImg, err = opts.Alg.RecolorImage(img); err != nil {
 			return
 		}
 		if err := internal.WritePng(newImg, file, p.in); err != nil {
